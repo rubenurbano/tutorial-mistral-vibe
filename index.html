@@ -1,0 +1,3059 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Tutorial MISTRAL VIBE by Rubén Sbarsky — V001</title>
+  <style>
+    :root {
+      --bg-main: #0a0e1a;
+      --bg-card: #0f172a;
+      --bg-elevated: #162238;
+      --blue-highlight: #1e3a5f;
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --accent: #38bdf8;
+      --accent-glow: #00d4ff;
+      --accent-soft: rgba(56, 189, 248, 0.14);
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --purple: #a855f7;
+      --border: #1e3a5f;
+      --font-scale: 1;
+      --nav-h: 58px;
+    }
+
+    html[data-theme="light"] {
+      --bg-main: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-elevated: #e2e8f0;
+      --blue-highlight: #cbd5e1;
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --accent: #0284c7;
+      --accent-glow: #0369a1;
+      --accent-soft: rgba(2, 132, 199, 0.12);
+      --border: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: calc(16px * var(--font-scale));
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      line-height: 1.65;
+      overflow-x: hidden;
+      padding-top: calc(var(--nav-h) + 4px);
+      padding-bottom: 90px;
+    }
+
+    /* Barra de progreso superior */
+    #reading-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--purple), var(--success));
+      z-index: 60;
+      transition: width 0.15s ease;
+    }
+
+    /* Barra de navegación fija */
+    nav#top-nav {
+      position: fixed;
+      top: 4px;
+      left: 0;
+      right: 0;
+      height: var(--nav-h);
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      overflow-x: auto;
+      white-space: nowrap;
+      z-index: 40;
+      scrollbar-width: thin;
+    }
+
+    html[data-theme="light"] nav#top-nav {
+      background: rgba(255, 255, 255, 0.96);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 42px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .chip:hover, .chip:focus-visible {
+      border-color: var(--accent);
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .chip.active {
+      background: var(--accent);
+      color: #050811;
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+
+    #mb {
+      background: var(--blue-highlight);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    /* Panel lateral Índice (Especificación exacta Agregar Índice.txt) */
+    #dr {
+      position: fixed;
+      top: 58px;
+      left: 0;
+      bottom: 0;
+      width: min(330px, 88vw);
+      background: #0f172a;
+      border-right: 1px solid #1e3a5f;
+      transform: translateX(-105%);
+      transition: .25s;
+      z-index: 45;
+      overflow: auto;
+      padding: 10px;
+      box-shadow: 6px 0 24px rgba(0, 0, 0, 0.6);
+    }
+
+    #dr.o {
+      transform: none;
+    }
+
+    #dr a {
+      display: block;
+      padding: 12px;
+      border-radius: 8px;
+      color: #e2e8f0;
+      cursor: pointer;
+      min-height: 44px;
+      font-size: 0.92rem;
+      font-weight: 500;
+      text-decoration: none;
+      margin-bottom: 4px;
+      border: 1px solid transparent;
+    }
+
+    #dr a:hover, #dr a:focus-visible {
+      background: #ffffff0d;
+      border-color: #38bdf866;
+      outline: none;
+    }
+
+    #dr a.on {
+      background: #00d4ff22;
+      color: #00d4ff;
+      font-weight: 700;
+      border-color: #00d4ff55;
+    }
+
+    /* Barra de herramientas de utilidad móvil (360px friendly) */
+    .utility-bar {
+      max-width: 1080px;
+      margin: 10px auto 0;
+      padding: 8px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .search-wrap {
+      display: flex;
+      flex: 1 1 200px;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .search-input {
+      width: 100%;
+      min-height: 42px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-main);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+
+    .tool-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .btn-util {
+      min-height: 42px;
+      min-width: 42px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .btn-util:hover, .btn-util:focus-visible {
+      border-color: var(--accent);
+      outline: 2px solid var(--accent);
+    }
+
+    /* Resultados del buscador */
+    #search-results-panel {
+      max-width: 1080px;
+      margin: 8px auto;
+      padding: 12px;
+      background: var(--bg-card);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      display: none;
+    }
+
+    .search-hit {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      display: block;
+      color: var(--text-primary);
+      text-decoration: none;
+      min-height: 44px;
+    }
+
+    .search-hit:hover {
+      background: var(--accent-soft);
+    }
+
+    /* Contenedor principal y pestañas */
+    main {
+      max-width: 1080px;
+      margin: 12px auto;
+      padding: 0 10px;
+    }
+
+    .tab-section {
+      display: none;
+      animation: fadeIn 0.22s ease-out;
+    }
+
+    .tab-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Tarjetas y Tipografía */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+
+    h1 {
+      font-size: 1.65rem;
+      line-height: 1.25;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      line-height: 1.3;
+      color: var(--accent);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      color: var(--text-primary);
+      margin: 16px 0 8px;
+    }
+
+    h4 {
+      font-size: 1rem;
+      color: var(--accent);
+      margin: 12px 0 6px;
+    }
+
+    p, li {
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    ul, ol {
+      padding-left: 20px;
+      margin-bottom: 12px;
+    }
+
+    .muted {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+    }
+
+    /* Etiquetas de fiabilidad */
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
+    .badge-oficial { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid #22c55e; }
+    .badge-limitado { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
+    .badge-experimental { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid #a855f7; }
+    .badge-noverificado { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+    .badge-nivel1 { background: rgba(34, 197, 94, 0.18); color: #4ade80; border: 1px solid #22c55e; }
+    .badge-nivel2 { background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid #38bdf8; }
+    .badge-nivel3 { background: rgba(168, 85, 247, 0.18); color: #c084fc; border: 1px solid #a855f7; }
+
+    /* Bloques de código y prompts copiables */
+    .code-box {
+      background: #050811;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin: 12px 0;
+      overflow: hidden;
+    }
+
+    .code-header {
+      background: var(--bg-elevated);
+      padding: 8px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .code-content {
+      padding: 12px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: #f8fafc;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .btn-copy {
+      min-height: 36px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .btn-copy:hover {
+      background: var(--accent);
+      color: #050811;
+    }
+
+    /* Enlaces URL con botón obligatorio "Abrir enlace en nueva ventana" */
+    .url-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin: 10px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .url-text {
+      font-family: ui-monospace, monospace;
+      font-size: 0.84rem;
+      color: var(--accent);
+      word-break: break-all;
+    }
+
+    .url-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn-ext-url {
+      min-height: 42px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #050811;
+      font-weight: 700;
+      font-size: 0.84rem;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Tablas responsivas (Samsung Galaxy A02s 360px friendly) */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin: 12px 0;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 290px;
+      font-size: 0.88rem;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--bg-elevated);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Desplegables / Acordeones */
+    details.collapsible {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    details.collapsible summary {
+      padding: 12px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--accent);
+      list-style: none;
+    }
+
+    details.collapsible summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.collapsible summary::after {
+      content: "▼";
+      font-size: 0.8rem;
+      transition: transform 0.2s;
+    }
+
+    details.collapsible[open] summary::after {
+      transform: rotate(180deg);
+    }
+
+    .collapsible-body {
+      padding: 14px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+
+    /* Listas de comprobación persistentes */
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      background: var(--bg-elevated);
+      margin-bottom: 8px;
+      cursor: pointer;
+      min-height: 44px;
+    }
+
+    .check-item input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      margin-top: 2px;
+      accent-color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* SVG Hero Container (Formato vertical 4:5 adaptado móvil/escritorio) */
+    .svg-hero-wrapper {
+      width: 100%;
+      max-width: 440px;
+      aspect-ratio: 4 / 5;
+      margin: 0 auto 16px;
+      background: radial-gradient(circle at 50% 35%, #162a4a 0%, #070b14 100%);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.15);
+    }
+
+    .svg-hero-wrapper svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Animaciones SVG multicapa */
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.45; transform: scale(0.98); }
+      50% { opacity: 0.95; transform: scale(1.04); }
+    }
+    @keyframes orbitSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes orbitReverse {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+    @keyframes dataFlow {
+      to { stroke-dashoffset: -40; }
+    }
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes cursorBlink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0.15; }
+    }
+
+    .anim-orbit-cw { transform-origin: 200px 185px; animation: orbitSlow 22s linear infinite; }
+    .anim-orbit-ccw { transform-origin: 200px 185px; animation: orbitReverse 16s linear infinite; }
+    .anim-pulse { transform-origin: 200px 185px; animation: pulseGlow 3.5s ease-in-out infinite; }
+    .anim-flow { stroke-dasharray: 6 6; animation: dataFlow 1.8s linear infinite; }
+    .anim-float { animation: floatCard 4s ease-in-out infinite; }
+    .anim-cursor { animation: cursorBlink 1.1s steps(2) infinite; }
+
+    body.animations-paused .anim-orbit-cw,
+    body.animations-paused .anim-orbit-ccw,
+    body.animations-paused .anim-pulse,
+    body.animations-paused .anim-flow,
+    body.animations-paused .anim-float,
+    body.animations-paused .anim-cursor {
+      animation-play-state: paused !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .anim-orbit-cw, .anim-orbit-ccw, .anim-pulse, .anim-flow, .anim-float, .anim-cursor {
+        animation: none !important;
+      }
+    }
+
+    /* Navegación fija al final de cada pestaña (Anterior / Siguiente) */
+    .tab-footer-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+      padding: 14px;
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      position: sticky;
+      bottom: 10px;
+      z-index: 20;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-step {
+      flex: 1 1 135px;
+      min-height: 46px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--accent);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-align: center;
+    }
+
+    .btn-step.primary {
+      background: var(--accent);
+      color: #050811;
+    }
+
+    /* Botones flotantes movibles ( arrastrables con dedo o ratón ) */
+    .floating-draggable {
+      position: fixed;
+      z-index: 50;
+      min-height: 46px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--accent);
+      border: 2px solid var(--accent);
+      font-weight: 800;
+      font-size: 0.82rem;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65);
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .floating-draggable:active {
+      cursor: grabbing;
+      transform: scale(1.04);
+    }
+
+    #fab-home {
+      bottom: 78px;
+      right: 12px;
+    }
+
+    #fab-top {
+      bottom: 22px;
+      right: 12px;
+    }
+
+    /* Destacado de autor en CRÉDITOS */
+    .author-spotlight {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--accent);
+      text-align: center;
+      letter-spacing: 0.02em;
+      margin: 14px 0 4px;
+      text-shadow: 0 0 18px rgba(56, 189, 248, 0.35);
+    }
+
+    /* Toast de notificación */
+    #toast-msg {
+      position: fixed;
+      bottom: 140px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #050811;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      z-index: 80;
+      display: none;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Optimización Samsung Galaxy A02s (360x800) */
+    @media (max-width: 400px) {
+      main { padding: 0 6px; }
+      .card { padding: 12px; }
+      h1 { font-size: 1.38rem; }
+      h2 { font-size: 1.22rem; }
+      .author-spotlight { font-size: 1.75rem; }
+      .chip { padding: 6px 11px; font-size: 0.82rem; }
+    }
+
+    /* Hoja de estilos de Impresión A4 Vertical estricta */
+    @page {
+      size: A4 portrait;
+      margin: 14mm 12mm 14mm 12mm;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        font-size: 11pt !important;
+      }
+      nav#top-nav, #dr, .utility-bar, .tab-footer-nav, .floating-draggable, #reading-progress, #toast-msg, .btn-copy {
+        display: none !important;
+      }
+      .tab-section {
+        display: block !important;
+        margin-bottom: 18pt !important;
+      }
+      .card, details.collapsible, . collapsible-body, .code-box, .url-card {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #444444 !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+      }
+      h1, h2, h3, h4, p, li, td, th, .author-spotlight, .code-content, .url-text {
+        color: #000000 !important;
+        text-shadow: none !important;
+      }
+      .svg-hero-wrapper {
+        max-width: 260px !important;
+        border: 1px solid #000000 !important;
+        background: #f8fafc !important;
+        page-break-inside: avoid;
+      }
+      table, pre, .code-content {
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra de progreso de lectura -->
+  <div id="reading-progress" aria-hidden="true"></div>
+
+  <!-- Fuente única SVG oculta que se extrae y elimina del DOM al arrancar -->
+  <div id="svg-master-template" style="display:none;" aria-hidden="true">
+    <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ilustración animada de MISTRAL VIBE CLI: consola PowerShell en Windows 11 conectada a un núcleo de inteligencia artificial de Mistral con escudos de permisos, herramientas y subagentes">
+      <defs>
+        <linearGradient id="bgGrad__UID__" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0a0e1a"/>
+          <stop offset="50%" stop-color="#0f172a"/>
+          <stop offset="100%" stop-color="#1e3a5f"/>
+        </linearGradient>
+        <linearGradient id="coreGrad__UID__" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00d4ff"/>
+          <stop offset="50%" stop-color="#38bdf8"/>
+          <stop offset="100%" stop-color="#a855f7"/>
+        </linearGradient>
+        <linearGradient id="termGrad__UID__" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#162238"/>
+          <stop offset="100%" stop-color="#080d1a"/>
+        </linearGradient>
+        <filter id="glow__UID__" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+        </filter>
+      </defs>
+
+      <!-- Fondo técnico -->
+      <rect width="400" height="500" fill="url(#bgGrad__UID__)"/>
+      
+      <!-- Cuadrícula cibernética de fondo -->
+      <g stroke="#1e3a5f" stroke-width="0.6" opacity="0.45">
+        <line x1="0" y1="60" x2="400" y2="60"/>
+        <line x1="0" y1="120" x2="400" y2="120"/>
+        <line x1="0" y1="180" x2="400" y2="180"/>
+        <line x1="0" y1="240" x2="400" y2="240"/>
+        <line x1="0" y1="300" x2="400" y2="300"/>
+        <line x1="0" y1="360" x2="400" y2="360"/>
+        <line x1="0" y1="420" x2="400" y2="420"/>
+        <line x1="60" y1="0" x2="60" y2="500"/>
+        <line x1="130" y1="0" x2="130" y2="500"/>
+        <line x1="200" y1="0" x2="200" y2="500"/>
+        <line x1="270" y1="0" x2="270" y2="500"/>
+        <line x1="340" y1="0" x2="340" y2="500"/>
+      </g>
+
+      <!-- Cabecera visual -->
+      <rect x="20" y="16" width="360" height="32" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-width="1.2"/>
+      <circle cx="38" cy="32" r="5" fill="#22c55e"/>
+      <circle cx="54" cy="32" r="5" fill="#f59e0b"/>
+      <circle cx="70" cy="32" r="5" fill="#ef4444"/>
+      <text x="215" y="36" fill="#38bdf8" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle">MISTRAL VIBE CLI v2.25.2 • WIN11</text>
+
+      <!-- Órbitas de Agentes y Herramientas -->
+      <g class="anim-orbit-cw">
+        <circle cx="200" cy="185" r="108" fill="none" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="10 8" opacity="0.55"/>
+        <circle cx="200" cy="77" r="14" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+        <text x="200" y="81" fill="#4ade80" font-family="monospace" font-size="8" font-weight="bold" text-anchor="middle">PLAN</text>
+        <circle cx="308" cy="185" r="14" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+        <text x="308" y="189" fill="#38bdf8" font-family="monospace" font-size="8" font-weight="bold" text-anchor="middle">READ</text>
+        <circle cx="200" cy="293" r="14" fill="#0f172a" stroke="#f59e0b" stroke-width="2"/>
+        <text x="200" y="297" fill="#fbbf24" font-family="monospace" font-size="8" font-weight="bold" text-anchor="middle">EDIT</text>
+        <circle cx="92" cy="185" r="14" fill="#0f172a" stroke="#a855f7" stroke-width="2"/>
+        <text x="92" y="189" fill="#c084fc" font-family="monospace" font-size="8" font-weight="bold" text-anchor="middle">GREP</text>
+      </g>
+
+      <g class="anim-orbit-ccw">
+        <circle cx="200" cy="185" r="76" fill="none" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5 7" opacity="0.65"/>
+        <rect x="182" y="99" width="36" height="18" rx="4" fill="#162238" stroke="#a855f7" stroke-width="1.2"/>
+        <text x="200" y="111" fill="#e2e8f0" font-family="monospace" font-size="8" text-anchor="middle">MCP</text>
+        <rect x="182" y="253" width="36" height="18" rx="4" fill="#162238" stroke="#00d4ff" stroke-width="1.2"/>
+        <text x="200" y="265" fill="#e2e8f0" font-family="monospace" font-size="8" text-anchor="middle">SKILL</text>
+      </g>
+
+      <!-- Líneas de flujo de datos entre Núcleo y Terminal -->
+      <path d="M 160 230 L 110 320" stroke="#00d4ff" stroke-width="2" class="anim-flow" fill="none"/>
+      <path d="M 200 245 L 200 320" stroke="#22c55e" stroke-width="2.5" class="anim-flow" fill="none"/>
+      <path d="M 240 230 L 290 320" stroke="#a855f7" stroke-width="2" class="anim-flow" fill="none"/>
+
+      <!-- Núcleo central MISTRAL VIBE -->
+      <g class="anim-pulse" filter="url(#glow__UID__)">
+        <polygon points="200,130 248,158 248,212 200,240 152,212 152,158" fill="url(#coreGrad__UID__)" opacity="0.25"/>
+        <polygon points="200,140 238,163 238,207 200,230 162,207 162,163" fill="#0f172a" stroke="url(#coreGrad__UID__)" stroke-width="3"/>
+      </g>
+      <!-- Logotipo M estilizado y escudo de aprobación -->
+      <path d="M 178 202 L 178 168 L 190 184 L 200 170 L 210 184 L 222 168 L 222 202" fill="none" stroke="#00d4ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="200" y="218" fill="#e2e8f0" font-family="monospace" font-size="9" font-weight="bold" text-anchor="middle">AGENTE IA</text>
+
+      <!-- Tarjetas flotantes laterales -->
+      <g class="anim-float">
+        <rect x="16" y="70" width="96" height="40" rx="6" fill="#0f172a" stroke="#22c55e" stroke-width="1.2"/>
+        <text x="64" y="86" fill="#4ade80" font-family="monospace" font-size="8" font-weight="bold" text-anchor="middle">PERMISOS</text>
+        <text x="64" y="100" fill="#e2e8f0" font-family="monospace" font-size="8" text-anchor="middle">ask | plan | edit</text>
+
+        <rect x="288" y="70" width="96" height="40" rx="6" fill="#0f172a" stroke="#38bdf8" stroke-width="1.2"/>
+        <text x="336" y="86" fill="#38bdf8" font-family="monospace" font-size="8" font-weight="bold" text-anchor="middle">ENTORNO</text>
+        <text x="336" y="100" fill="#e2e8f0" font-family="monospace" font-size="8" text-anchor="middle">Python 3.12+ • uv</text>
+      </g>
+
+      <!-- Ventana inferior de PowerShell / Vibe TUI -->
+      <rect x="20" y="315" width="360" height="165" rx="10" fill="url(#termGrad__UID__)" stroke="#38bdf8" stroke-width="1.8"/>
+      <rect x="20" y="315" width="360" height="24" rx="10" fill="#1e3a5f"/>
+      <text x="32" y="331" fill="#e2e8f0" font-family="monospace" font-size="9" font-weight="bold">PS C:\Users\Ruben\Documents\vibe-lab&gt; vibe</text>
+
+      <!-- Líneas de código interactivo dentro de la consola -->
+      <text x="32" y="356" fill="#38bdf8" font-family="monospace" font-size="9.5">&gt; Lee @notas.txt y crea lista.txt</text>
+      <text x="32" y="376" fill="#4ade80" font-family="monospace" font-size="9">✓ tool: read_file("notas.txt") [APROBADO]</text>
+      <text x="32" y="394" fill="#fbbf24" font-family="monospace" font-size="9">✓ tool: write_file("lista.txt") [DIFF OK]</text>
+      <text x="32" y="412" fill="#c084fc" font-family="monospace" font-size="9">✓ task(agent="explore") • AGENTS.md activo</text>
+
+      <!-- Barra de estado del agente dentro de la consola -->
+      <rect x="30" y="426" width="340" height="26" rx="5" fill="#0a0e1a" stroke="#22c55e" stroke-width="1.2"/>
+      <text x="40" y="443" fill="#e2e8f0" font-family="monospace" font-size="9.5">/help • @archivo • Shift+Tab [accept-edits]</text>
+      <rect x="348" y="433" width="8" height="13" fill="#00d4ff" class="anim-cursor"/>
+
+      <text x="200" y="470" fill="#94a3b8" font-family="monospace" font-size="8.5" text-anchor="middle">SEGURIDAD • CONTROL HUMANO • CÓDIGO ABIERTO APACHE-2.0</text>
+    </svg>
+  </div>
+
+  <!-- Barra superior fija con el botón ☰ Índice como primer elemento -->
+  <nav id="top-nav" aria-label="Navegación principal del tutorial">
+    <button class="chip" id="mb" aria-label="Abrir índice" aria-expanded="false">☰ Índice</button>
+    <button class="chip nav-tab-btn active" data-tab="0">INICIO</button>
+    <button class="chip nav-tab-btn" data-tab="1">CONCEPTOS</button>
+    <button class="chip nav-tab-btn" data-tab="2">INSTALACIÓN</button>
+    <button class="chip nav-tab-btn" data-tab="3">PROCEDIMIENTO</button>
+    <button class="chip nav-tab-btn" data-tab="4">AVANZADO</button>
+    <button class="chip nav-tab-btn" data-tab="5">PRÁCTICA (10 LABS)</button>
+    <button class="chip nav-tab-btn" data-tab="6">PROMPTS</button>
+    <button class="chip nav-tab-btn" data-tab="7">33 Preguntas (Q&amp;A)</button>
+    <button class="chip nav-tab-btn" data-tab="8">ERRORES</button>
+    <button class="chip nav-tab-btn" data-tab="9">RESUMEN Y GLOSARIO</button>
+    <button class="chip nav-tab-btn" data-tab="10">FUENTES</button>
+    <button class="chip nav-tab-btn" data-tab="11">CRÉDITOS</button>
+  </nav>
+  <div id="dr" role="navigation" aria-label="Índice lateral de secciones"></div>
+
+  <!-- Barra de utilidades interactivas -->
+  <section class="utility-bar" aria-label="Herramientas de lectura y búsqueda">
+    <div class="search-wrap">
+      <input type="search" id="global-search" class="search-input" placeholder="Buscar en todo el tutorial (ej. config.toml, uv, MCP)..." aria-label="Buscar en el tutorial">
+      <button class="btn-util" id="btn-clear-search" title="Limpiar búsqueda">✕</button>
+    </div>
+    <div class="tool-btns">
+      <button class="btn-util" id="btn-font-dec" aria-label="Reducir tamaño de letra" title="Reducir letra">A−</button>
+      <button class="btn-util" id="btn-font-inc" aria-label="Aumentar tamaño de letra" title="Aumentar letra">A+</button>
+      <button class="btn-util" id="btn-theme-toggle" aria-label="Cambiar entre tema oscuro y claro" title="Tema claro/oscuro">🌓 Tema</button>
+      <button class="btn-util" id="btn-svg-pause" aria-label="Pausar o reanudar animación SVG" title="Pausar/Reanudar SVG">⏯ SVG</button>
+      <button class="btn-util" id="btn-print-pdf" aria-label="Imprimir o guardar como PDF" title="Imprimir / PDF">🖨 PDF</button>
+    </div>
+  </section>
+
+  <!-- Panel de resultados de búsqueda -->
+  <div id="search-results-panel" role="region" aria-live="polite"></div>
+
+  <main id="main-content">
+
+    <!-- ==========================================
+         PESTAÑA 0: INICIO
+         ========================================== -->
+    <section class="tab-section active" data-t="INICIO">
+      <div class="card">
+        <div id="svg-mount-home" class="svg-hero-wrapper" role="img" aria-label="Ilustración interactiva de MISTRAL VIBE en Windows 11 mostrando el ciclo entre el usuario en PowerShell, el modelo de IA y las herramientas con control de permisos"></div>
+
+        <!-- Título con "by Rubén Sbarsky" únicamente en la pestaña de INICIO -->
+        <h1>Tutorial MISTRAL VIBE by Rubén Sbarsky</h1>
+        <p class="muted"><strong>Del primer clic en PowerShell al trabajo profesional con un agente de programación en la terminal</strong></p>
+
+        <div style="margin: 14px 0; display: flex; flex-wrap: wrap; gap: 10px;">
+          <button class="chip" id="ix" type="button" style="background: var(--accent); color: #050811; font-weight: 800;">☰ Ver índice</button>
+          <button class="chip" type="button" onclick="go(2)">Ir a Instalación en Windows 11 →</button>
+          <button class="chip" type="button" onclick="go(6)">Ver todos los Prompts →</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <tbody>
+              <tr><th>Autor</th><td>Rubén Sbarsky</td></tr>
+              <tr><th>Sistema de referencia</th><td>Windows 11</td></tr>
+              <tr><th>Fecha de elaboración e investigación</th><td>7 de noviembre de 2026</td></tr>
+              <tr><th>Sincronización del entregable</th><td>08/11/2026 — 02:34:44 (Versión V001)</td></tr>
+              <tr><th>Versión de MISTRAL VIBE verificada</th><td>2.25.2 (publicada el 10 de septiembre de 2026 según el CHANGELOG oficial; puede haber versiones posteriores)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="url-card">
+          <div><strong>Documentación oficial de partida (Repositorio GitHub):</strong></div>
+          <div class="url-text">https://github.com/mistralai/mistral-vibe</div>
+          <div class="url-actions">
+            <a href="https://github.com/mistralai/mistral-vibe" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://github.com/mistralai/mistral-vibe">COPIAR URL</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Cómo leer y aprovechar este tutorial</h2>
+        <p>Este documento está escrito para alguien que nunca ha usado una terminal ni ha programado. Cada capítulo explica un concepto siguiendo la secuencia pedagógica (<strong>QUÉ ES → PARA QUÉ SIRVE → POR QUÉ IMPORTA → CÓMO SE HACE → EJEMPLO → PRÁCTICA → ERRORES → RESUMEN</strong>), te hace practicarlo y te da una forma de comprobar que lo has hecho bien. Si te saltas una comprobación, es probable que algo falle más adelante sin que sepas por qué.</p>
+
+        <h3>Cómo se distinguen los comandos</h3>
+        <p>Hay dos lugares distintos donde escribirás cosas, y no hay que mezclarlos:</p>
+        <ol>
+          <li><strong>En PowerShell</strong>: la ventana de Windows donde escribes órdenes al sistema. Los bloques de código de este tipo llevan el encabezado <em>«En PowerShell»</em>.</li>
+          <li><strong>Dentro de Vibe</strong>: la pantalla de MISTRAL VIBE una vez arrancado. Allí escribes peticiones en español o comandos que empiezan por <code>/</code>. Estos bloques llevan el encabezado <em>«Dentro de Vibe»</em>.</li>
+        </ol>
+        <p><strong>Regla de oro:</strong> No escribas nunca los símbolos <code>PS&gt;</code> ni <code>&gt;</code> que puedan aparecer en ejemplos de pantalla: son el indicador del propio programa, no forman parte de lo que tecleas.</p>
+
+        <h3>Etiquetas de fiabilidad documental</h3>
+        <p>Cuando una funcionalidad no es estable o no se ha podido comprobar directamente, se indica con estas etiquetas:</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Etiqueta</th><th>Significado</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="badge badge-oficial">OFICIAL</span></td><td>Documentada en el README, el CHANGELOG o la documentación de Mistral y de uso normal.</td></tr>
+              <tr><td><span class="badge badge-limitado">LIMITADO</span></td><td>Existe, pero con restricciones documentadas (por ejemplo, solo en ciertos sistemas o en despliegue progresivo).</td></tr>
+              <tr><td><span class="badge badge-experimental">EXPERIMENTAL</span></td><td>La propia documentación la marca como experimental o de prueba.</td></tr>
+              <tr><td><span class="badge badge-noverificado">NO VERIFICADO</span></td><td>No se ha podido confirmar en fuentes oficiales. Hay que comprobarla en tu instalación.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="muted"><strong>Aviso sobre los resultados esperados:</strong> Los textos que muestro como «resultado esperado» son orientativos. Pueden variar ligeramente según la versión de Vibe, de uv o de Windows. No se incluyen capturas de pantalla inventadas para preservar el rigor técnico.</p>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PESTAÑA 1: CONCEPTOS (PARTE I: Caps 1, 2 y 3)
+         ========================================== -->
+    <section class="tab-section" data-t="CONCEPTOS">
+      <div class="card">
+        <h2>PARTE I. COMPRENDER MISTRAL VIBE</h2>
+        <h3>Capítulo 1. ¿Qué es MISTRAL VIBE?</h3>
+
+        <h4>1.1. Qué es</h4>
+        <p>MISTRAL VIBE es un programa de código abierto (licencia Apache-2.0) creado por la empresa francesa Mistral AI. El repositorio oficial lo describe como un asistente de programación para la línea de comandos que funciona con los modelos de Mistral. Le escribes en lenguaje natural, por ejemplo <em>«busca todos los TODO de este proyecto»</em>, y él explora tus carpetas, lee archivos, los modifica y ejecuta comandos para cumplir lo que pides. <span class="badge badge-oficial">OFICIAL</span></p>
+        <p>El programa se arranca escribiendo la palabra <code>vibe</code> en una terminal. A veces verás escrito «Vibe», «Mistral Vibe» o «Vibe CLI». Todos se refieren a lo mismo en este tutorial. <strong>Ojo:</strong> Mistral usa también el nombre «Vibe» para otros productos (una aplicación web y móvil, una extensión para VS Code y sesiones web llamadas Vibe Code Web). Este tutorial trata solo de la versión de línea de comandos, la CLI.</p>
+
+        <h4>1.2. Para qué sirve</h4>
+        <p>Sirve para tareas en las que hay archivos de por medio, sobre todo de código, pero no solo:</p>
+        <ul>
+          <li>Entender un proyecto que no escribiste tú.</li>
+          <li>Crear páginas web, pequeñas aplicaciones y scripts.</li>
+          <li>Corregir errores y mejorar código existente.</li>
+          <li>Buscar y reorganizar información dentro de muchos archivos.</li>
+          <li>Automatizar tareas repetitivas con programas pequeños.</li>
+        </ul>
+
+        <h4>1.3. Qué problemas resuelve y por qué importa</h4>
+        <p>Programar exige conocer la sintaxis de un lenguaje, las herramientas y los detalles de cada sistema. Un agente como Vibe te quita buena parte de esa barrera: tú describes el resultado y él escribe el código, lo guarda donde corresponde y puede ejecutarlo. <strong>No elimina la necesidad de revisar lo que hace.</strong> Quien no revisa, acepta a ciegas, y esa es la mayor fuente de problemas con estas herramientas.</p>
+
+        <h4>1.4. Cómo funciona, en pocas palabras</h4>
+        <ol>
+          <li>Tú escribes una petición.</li>
+          <li>Vibe envía tu petición, junto con información de tu proyecto (estructura de carpetas, estado de Git), a un modelo de lenguaje a través de internet.</li>
+          <li>El modelo responde con texto o con una petición de usar una herramienta, por ejemplo «lee este archivo» o «ejecuta este comando».</li>
+          <li>Vibe ejecuta la herramienta, pidiéndote permiso si corresponde, y devuelve el resultado al modelo.</li>
+          <li>El ciclo se repite hasta que el modelo considera que ha terminado.</li>
+        </ol>
+
+        <h4>1.5. Qué significa «agente de programación»</h4>
+        <p>Un agente no solo conversa: actúa. Puede decidir qué pasos dar, usar herramientas y comprobar el resultado de sus propias acciones. El README oficial lo describe como una interfaz conversacional con tu código, que descompone tareas complejas y usa herramientas para leer, escribir y buscar archivos, gestionar una lista de tareas y ejecutar comandos.</p>
+
+        <h4>1.6. Chatbot convencional frente a agente de línea de comandos</h4>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Aspecto</th><th>Chatbot web (página de chat)</th><th>Agente CLI como Vibe</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Dónde vive</strong></td><td>En el navegador</td><td>En tu terminal, dentro de una carpeta tuya</td></tr>
+              <tr><td><strong>Qué ve</strong></td><td>Lo que pegas o subes</td><td>Los archivos de la carpeta de trabajo, según los permisos</td></tr>
+              <tr><td><strong>Qué hace</strong></td><td>Te da texto que tú copias</td><td>Lee, crea y modifica archivos y ejecuta comandos</td></tr>
+              <tr><td><strong>Riesgo principal</strong></td><td>Que la respuesta sea incorrecta</td><td>Lo anterior, más que una acción dañe tus archivos</td></tr>
+              <tr><td><strong>Control</strong></td><td>Tú copias y pegas</td><td>Tú apruebas o deniegas cada acción, según el agente elegido</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>1.7. Qué puede hacer y qué no</h4>
+        <p><strong>Puede, según la documentación oficial:</strong></p>
+        <ul>
+          <li>Leer, crear y modificar archivos (<code>read_file</code>, <code>write_file</code>, <code>edit</code>).</li>
+          <li>Buscar texto con <code>grep</code>.</li>
+          <li>Ejecutar comandos de shell.</li>
+          <li>Llevar una lista de tareas (<code>todo</code>).</li>
+          <li>Hacerte preguntas cuando le falta información (<code>ask_user_question</code>).</li>
+          <li>Delegar trabajo en subagentes (<code>task</code>).</li>
+          <li>Recuperar páginas y hacer búsquedas web (<code>web_fetch</code>, <code>web_search</code>, disponibles desde la versión 2.3.0 según el CHANGELOG).</li>
+          <li>Conectarse a servidores MCP y cargar Skills (capítulo 20).</li>
+        </ul>
+        <p><strong>No puede, o no debes esperar que lo haga:</strong></p>
+        <ul>
+          <li>Garantizar que su código sea correcto. Hay que probarlo siempre.</li>
+          <li>Conocer tus intenciones si no las explicas con precisión.</li>
+          <li>Trabajar sin conexión con modelos de Mistral (existe una vía documentada para modelos locales que queda fuera del flujo estándar).</li>
+          <li>Protegerte de ti mismo: si le das permiso para todo, hará todo lo que decida el modelo.</li>
+        </ul>
+
+        <h4>1.8. Ejemplos del mundo real</h4>
+        <ul>
+          <li>Una persona que gestiona un pequeño negocio pide una hoja HTML que calcule precios con descuento y la abre en el navegador.</li>
+          <li>Un estudiante pide que se renombren cientos de fotos con un patrón fijo.</li>
+          <li>Alguien hereda una carpeta con un proyecto antiguo y pide un resumen de qué hace cada archivo.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Capítulo 2. Conocimientos mínimos necesarios</h3>
+        <p>Aquí tienes las definiciones imprescindibles. No hace falta memorizarlas: las verás aplicadas una y otra vez.</p>
+
+        <h4>2.1. Terminal, consola y línea de comandos</h4>
+        <ul>
+          <li><strong>Terminal:</strong> la ventana donde escribes órdenes en forma de texto en lugar de hacer clic.</li>
+          <li><strong>Consola:</strong> en la práctica, lo mismo. Históricamente era el nombre de la pantalla y el teclado conectados a un ordenador. Hoy se usan como sinónimos.</li>
+          <li><strong>Línea de comandos:</strong> la línea donde escribes la orden y pulsas Enter.</li>
+          <li><strong>Shell o intérprete:</strong> el programa que lee lo que escribes y lo ejecuta. PowerShell es un shell. CMD (Símbolo del sistema) es otro, más antiguo.</li>
+        </ul>
+        <p><strong>Diferencia importante:</strong> la terminal es la ventana, el shell es el programa que hay dentro. En Windows 11 puedes abrir PowerShell dentro de Windows Terminal o en su propia ventana azul.</p>
+
+        <h4>2.2. PowerShell y CMD</h4>
+        <p>Los dos vienen con Windows, pero no hablan igual. PowerShell es más moderno y es el que usaremos. Una orden como <code>Get-ChildItem</code> funciona en PowerShell y no en CMD. Cuando un tutorial de internet te dé un comando, comprueba para cuál de los dos está escrito.</p>
+
+        <h4>2.3. Python</h4>
+        <p>Python es un lenguaje de programación. Vibe está escrito en Python, por lo que necesita un intérprete de Python (3.12 o superior según la documentación) para ejecutarse. Vibe no es Python: es un programa hecho con Python. Como veremos, la herramienta <code>uv</code> puede descargar Python por ti si hace falta.</p>
+
+        <h4>2.4. Modelo de lenguaje, agente y API</h4>
+        <ul>
+          <li><strong>Modelo de lenguaje:</strong> el «cerebro» que genera texto (Mistral Medium, Mistral Large, Codestral). Vive en los servidores de Mistral.</li>
+          <li><strong>Agente:</strong> en Vibe, un perfil de configuración que decide qué acciones se aprueban automáticamente (<code>ask</code>, <code>plan</code>, <code>accept-edits</code>, <code>auto-approve</code>...).</li>
+          <li><strong>API:</strong> un canal por el que un programa pide cosas a otro por internet. Vibe usa la API de Mistral.</li>
+          <li><strong>API Key (clave de API):</strong> una contraseña larga que identifica tu cuenta ante la API. Quien la tenga puede gastar tu cuota. Hay que tratarla como una contraseña bancaria.</li>
+        </ul>
+
+        <h4>2.5. Directorio de trabajo, archivo y repositorio</h4>
+        <ul>
+          <li><strong>Archivo:</strong> un documento con nombre, como <code>notas.txt</code>.</li>
+          <li><strong>Directorio o carpeta:</strong> un contenedor de archivos y otras carpetas.</li>
+          <li><strong>Directorio de trabajo:</strong> la carpeta en la que está «situada» la terminal. Vibe trabaja sobre la carpeta desde la que lo arrancas. Es la decisión de seguridad más importante del tutorial.</li>
+          <li><strong>Repositorio:</strong> una carpeta de proyecto bajo control de versiones con Git (sistema que guarda el historial de cambios). No todo proyecto es un repositorio.</li>
+        </ul>
+
+        <h4>2.6. Qué significa ejecutar código o un comando</h4>
+        <p>Ejecutar es pedir al ordenador que realice las instrucciones escritas. Cuando Vibe ejecuta un comando por ti, lo hace con los mismos permisos que tu usuario de Windows. Por eso el sistema de aprobaciones existe.</p>
+
+        <h4>2.7. Instalación y configuración</h4>
+        <p>Instalar es copiar el programa en tu ordenador. Configurar es decirle cómo comportarse y con qué cuenta trabajar. Se puede estar instalado y sin configurar (Vibe arrancará, pero te pedirá iniciar sesión).</p>
+
+        <details class="collapsible">
+          <summary>Ejercicio de comprensión del Capítulo 2 (Haz clic para ver solución)</summary>
+          <div class="collapsible-body">
+            <p><strong>Pregunta:</strong> ¿Cuál es la diferencia entre PowerShell y Vibe? ¿Dónde escribirías <code>vibe</code>?</p>
+            <p><strong>Solución:</strong> PowerShell es un shell de Windows donde escribes comandos del sistema. Vibe es un programa que se arranca desde PowerShell escribiendo <code>vibe</code> y que a partir de ese momento tiene su propia pantalla.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <h3>Capítulo 3. Cómo trabaja MISTRAL VIBE</h3>
+        <h4>3.1. Esquema visual del ciclo de ejecución</h4>
+        <div class="code-box">
+          <div class="code-header"><span>DIAGRAMA DE FLUJO DEL AGENTE</span></div>
+          <div class="code-content">[1. Tú escribes una petición] 
+       │
+       ▼
+[2. Vibe añade contexto del proyecto (carpetas, Git, AGENTS.md)]
+       │
+       ▼
+[3. Modelo de lenguaje en los servidores de Mistral]
+       │
+       ├─► ¿No pide herramienta? ──► [Respuesta final en pantalla]
+       │
+       └─► ¿Pide usar herramienta? ──► [Sistema de permisos]
+                                            ├─► Aprobada ──► [Vibe ejecuta en tu PC] ──► (Vuelve al modelo)
+                                            └─► Denegada ──► [El modelo recibe negativa] ──► (Vuelve al modelo)</div>
+        </div>
+
+        <h4>3.2. Piezas que intervienen</h4>
+        <ul>
+          <li><strong>Interacción con el usuario:</strong> interfaz de texto moderna dentro de la terminal, con autocompletado de comandos <code>/</code> y de rutas con <code>@</code>, historial persistente y temas visuales.</li>
+          <li><strong>Comunicación con los modelos:</strong> por defecto con los modelos de Mistral por API. El modelo integrado es Mistral Medium 3.5 (alias <code>mistral-medium-3.5</code>). También puedes configurar otros proveedores compatibles, como OpenRouter, mediante <code>config.toml</code>.</li>
+          <li><strong>Lectura y escritura de archivos:</strong> <code>read_file</code>, <code>write_file</code> (solo crea archivos nuevos y se niega a sobrescribir uno existente desde CHANGELOG 2.14.0) y <code>edit</code> (modifica uno existente).</li>
+          <li><strong>Ejecución de comandos:</strong> herramienta de shell (variante basada en Git Bash o en PowerShell en Windows).</li>
+          <li><strong>Gestión de tareas:</strong> la herramienta <code>todo</code> mantiene una lista de lo que el agente va haciendo. Se muestra u oculta con <code>Ctrl+T</code>.</li>
+          <li><strong>Agentes incorporados:</strong> <code>ask</code>, <code>plan</code>, <code>accept-edits</code>, <code>auto-approve</code>, además de <code>smart-approve</code> y <code>lean</code> con condiciones.</li>
+          <li><strong>Subagentes:</strong> el agente principal puede delegar tareas a otros agentes con la herramienta <code>task</code>. Existe uno incorporado llamado <code>explore</code>.</li>
+          <li><strong>Contexto del proyecto:</strong> estructura de carpetas, estado de Git y archivos <code>AGENTS.md</code>.</li>
+          <li><strong>Sistema de permisos:</strong> combina el agente activo, las carpetas de confianza y los permisos por herramienta.</li>
+        </ul>
+
+        <h4>3.3. Flujo de trabajo recomendado</h4>
+        <ol>
+          <li>Abres PowerShell en la carpeta del proyecto.</li>
+          <li>Arrancas <code>vibe</code>.</li>
+          <li>Pides un análisis con el agente <code>plan</code> o <code>ask</code>.</li>
+          <li>Revisas el plan propuesto.</li>
+          <li>Cambias a <code>accept-edits</code> para ejecutarlo.</li>
+          <li>Revisas los cambios y los pruebas tú mismo.</li>
+          <li>Si todo es correcto, guardas una copia o un commit; si no, explicas el fallo y repites.</li>
+        </ol>
+
+        <details class="collapsible">
+          <summary>Ejercicio de comprensión del Capítulo 3 (Haz clic para ver solución)</summary>
+          <div class="collapsible-body">
+            <p><strong>Pregunta:</strong> ¿Por qué Vibe necesita internet para funcionar con modelos de Mistral y en qué momento exacto puede modificar tus archivos?</p>
+            <p><strong>Solución:</strong> Vibe envía contexto y petición al modelo por internet; los archivos solo se modifican cuando el modelo pide una herramienta de escritura (<code>write_file</code> o <code>edit</code>) y el sistema de permisos la autoriza.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PESTAÑA 2: INSTALACIÓN (PARTE II: Caps 4 a 9)
+         ========================================== -->
+    <section class="tab-section" data-t="INSTALACIÓN">
+      <div class="card">
+        <h2>PARTE II. INSTALACIÓN COMPLETA EN WINDOWS 11</h2>
+        <p><span class="badge badge-limitado">LIMITADO</span> <strong>Advertencia oficial:</strong> El README del repositorio dice que Mistral Vibe funciona en Windows, pero que Mistral soporta y apunta oficialmente a entornos UNIX (Linux y macOS). Esto no impide usarlo en Windows 11, pero significa que algunos detalles pueden fallar más que en Linux o macOS. Te indico los puntos delicados en cada capítulo.</p>
+
+        <h3>Capítulo 4. Preparación de Windows 11</h3>
+        <h4>4.1. Qué necesitas y qué es opcional</h4>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Elemento</th><th>¿Imprescindible?</th><th>Para qué sirve</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Windows 11 con conexión a internet</td><td>Sí</td><td>Vibe habla con los servidores de Mistral.</td></tr>
+              <tr><td>PowerShell (ya instalado)</td><td>Sí</td><td>Donde escribirás los comandos de instalación.</td></tr>
+              <tr><td>uv</td><td>Sí (lo instalas en el cap. 6)</td><td>Instala Vibe y, si hace falta, Python.</td></tr>
+              <tr><td>Cuenta de Mistral</td><td>Sí para modelos de Mistral</td><td>Iniciar sesión o crear una clave de API.</td></tr>
+              <tr><td>Python 3.12 o superior</td><td>No de forma directa</td><td>uv lo descarga si hace falta. Aun así, el cap. 5 enseña a instalarlo y comprobarlo.</td></tr>
+              <tr><td>Git para Windows</td><td>Recomendado</td><td>Vibe usa Git para conocer el estado del proyecto y prefiere Git Bash como shell si lo encuentra.</td></tr>
+              <tr><td>Windows Terminal</td><td>Recomendado</td><td>Ventana de terminal moderna (el README recomienda WezTerm, Alacritty, Ghostty y Kitty; Windows Terminal no figura en esa lista: <span class="badge badge-noverificado">NO VERIFICADO</span>).</td></tr>
+              <tr><td>Editor de texto (Bloc de notas)</td><td>Recomendado</td><td>Para abrir y editar <code>config.toml</code>.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>4.2. Identificar tu versión de Windows</h4>
+        <ol>
+          <li>Pulsa a la vez la tecla <code>Windows</code> y la letra <code>R</code> (se abre «Ejecutar»).</li>
+          <li>Escribe <code>winver</code> y pulsa Enter.</li>
+          <li>Comprobación: la ventana menciona «Windows 11» y un número de versión (por ejemplo 24H2 o 25H2).</li>
+        </ol>
+
+        <h4>4.3. Abrir PowerShell y distinguirlo de CMD</h4>
+        <p>Haz clic en Inicio, escribe <code>PowerShell</code> y haz clic en «Windows PowerShell» (no hace falta ejecutar como administrador). Sabrás que estás en PowerShell porque la línea empieza por <code>PS</code> (ejemplo: <code>PS C:\Users\Rubén&gt;</code>), mientras que en CMD empieza directamente por <code>C:\Users\Rubén&gt;</code>.</p>
+
+        <h4>4.4. Identificar la arquitectura del sistema</h4>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Comprobar arquitectura</span><button class="btn-copy" data-copy="$env:PROCESSOR_ARCHITECTURE">COPIAR</button></div>
+          <div class="code-content">$env:PROCESSOR_ARCHITECTURE</div>
+        </div>
+        <p class="muted">Resultado esperado: <code>AMD64</code> (Intel/AMD) o <code>ARM64</code>. El CHANGELOG indica que en la versión 2.9.4 se dejaron de publicar artefactos binarios de Windows ARM (<span class="badge badge-noverificado">NO VERIFICADO</span> el comportamiento exacto en Windows ARM64).</p>
+
+        <h4>4.5. Comprobar los programas instalados</h4>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Buscar Python</span><button class="btn-copy" data-copy="Get-Command python -ErrorAction SilentlyContinue">COPIAR</button></div>
+          <div class="code-content">Get-Command python -ErrorAction SilentlyContinue</div>
+        </div>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Buscar Git</span><button class="btn-copy" data-copy="Get-Command git -ErrorAction SilentlyContinue">COPIAR</button></div>
+          <div class="code-content">Get-Command git -ErrorAction SilentlyContinue</div>
+        </div>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Buscar uv</span><button class="btn-copy" data-copy="Get-Command uv -ErrorAction SilentlyContinue">COPIAR</button></div>
+          <div class="code-content">Get-Command uv -ErrorAction SilentlyContinue</div>
+        </div>
+
+        <h4>4.6. Preparar una carpeta de trabajo segura (vibe-lab)</h4>
+        <p>Nunca practiques en tu carpeta personal completa ni en Documentos entero. Crea una carpeta exclusiva:</p>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Crear carpeta vibe-lab</span><button class="btn-copy" data-copy="New-Item -ItemType Directory -Path &quot;$HOME\Documents\vibe-lab&quot;">COPIAR</button></div>
+          <div class="code-content">New-Item -ItemType Directory -Path "$HOME\Documents\vibe-lab"</div>
+        </div>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Entrar en vibe-lab</span><button class="btn-copy" data-copy="Set-Location &quot;$HOME\Documents\vibe-lab&quot;">COPIAR</button></div>
+          <div class="code-content">Set-Location "$HOME\Documents\vibe-lab"</div>
+        </div>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Confirmar ubicación</span><button class="btn-copy" data-copy="Get-Location">COPIAR</button></div>
+          <div class="code-content">Get-Location</div>
+        </div>
+        <p class="muted">Si dice que la ruta no existe porque Documentos está en OneDrive, usa <code>New-Item -ItemType Directory -Path "$HOME\vibe-lab"</code>.</p>
+      </div>
+
+      <div class="card">
+        <h3>Capítulo 5. Instalación de Python</h3>
+        <p>Se requiere <strong>Python 3.12 o superior</strong> para una instalación manual (con <code>uv</code> se descarga automáticamente si hace falta). Según la documentación oficial de Python para Windows, la forma actual es el <strong>Python Install Manager</strong> (archivo MSIX desde python.org o Microsoft Store).</p>
+
+        <div class="url-card">
+          <div><strong>Descarga oficial de Python:</strong></div>
+          <div class="url-text">https://www.python.org/downloads/</div>
+          <div class="url-actions">
+            <a href="https://www.python.org/downloads/" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://www.python.org/downloads/">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Instalar Python 3.12 con py</span><button class="btn-copy" data-copy="py install 3.12">COPIAR</button></div>
+          <div class="code-content">py install 3.12</div>
+        </div>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Comprobar versión y lista</span><button class="btn-copy" data-copy="py --version&#10;py list&#10;python --version">COPIAR</button></div>
+          <div class="code-content">py --version
+py list
+python --version</div>
+        </div>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Detectar conflictos entre versiones</span><button class="btn-copy" data-copy="Get-Command python | Format-List Source&#10;py list --one">COPIAR</button></div>
+          <div class="code-content">Get-Command python | Format-List Source
+py list --one</div>
+        </div>
+        <p class="muted"><strong>Nota sobre «GIL-enabled»:</strong> El GIL (Global Interpreter Lock) viene activado en la compilación estándar por defecto. Usa la compilación estándar (<span class="badge badge-noverificado">NO VERIFICADO</span> si Vibe funciona con compilaciones free-threaded sin GIL).</p>
+      </div>
+
+      <div class="card">
+        <h3>Capítulo 6. Instalación de uv</h3>
+        <p><code>uv</code> es un gestor de paquetes y herramientas de Python escrito en Rust por Astral. Instala cada herramienta en un entorno aislado.</p>
+
+        <h4>Inspeccionar el instalador antes de ejecutarlo (opcional y seguro)</h4>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Inspeccionar script de uv</span><button class="btn-copy" data-copy="powershell -c &quot;irm https://astral.sh/uv/install.ps1 | more&quot;">COPIAR</button></div>
+          <div class="code-content">powershell -c "irm https://astral.sh/uv/install.ps1 | more"</div>
+        </div>
+
+        <h4>6.3. Descargar e instalar uv en Windows 11 <span class="badge badge-oficial">OFICIAL</span></h4>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Instalar uv</span><button class="btn-copy" data-copy="powershell -ExecutionPolicy ByPass -c &quot;irm https://astral.sh/uv/install.ps1 | iex&quot;">COPIAR</button></div>
+          <div class="code-content">powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</div>
+        </div>
+        <p class="muted"><code>-ExecutionPolicy ByPass</code> permite ejecutar el script solo en esa invocación sin alterar tu política global; <code>irm</code> descarga el script y <code>iex</code> lo ejecuta.</p>
+
+        <h4>6.4. Verificar que funciona (en una ventana nueva de PowerShell)</h4>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Verificar uv y carpeta de herramientas</span><button class="btn-copy" data-copy="uv --version&#10;uv tool dir">COPIAR</button></div>
+          <div class="code-content">uv --version
+uv tool dir</div>
+        </div>
+
+        <h4>Alternativa con WinGet y actualización de uv</h4>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Alternativa WinGet (no mezclar métodos)</span><button class="btn-copy" data-copy="winget install --id=astral-sh.uv -e">COPIAR</button></div>
+          <div class="code-content">winget install --id=astral-sh.uv -e</div>
+        </div>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Actualizar uv</span><button class="btn-copy" data-copy="uv self update">COPIAR</button></div>
+          <div class="code-content">uv self update</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Capítulo 7. Instalación de MISTRAL VIBE</h3>
+        <h4>7.2. Instalación mediante uv (Recomendado) <span class="badge badge-oficial">OFICIAL</span></h4>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Instalar mistral-vibe</span><button class="btn-copy" data-copy="uv tool install mistral-vibe">COPIAR</button></div>
+          <div class="code-content">uv tool install mistral-vibe</div>
+        </div>
+        <p>El paquete en PyPI se llama <code>mistral-vibe</code>, pero instala los ejecutables <code>vibe</code> y <code>vibe-acp</code>.</p>
+
+        <h4>7.3. Comprobar instalación y versión (abre ventana nueva de PowerShell)</h4>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Comprobar versión de Vibe</span><button class="btn-copy" data-copy="vibe --version&#10;uv tool list">COPIAR</button></div>
+          <div class="code-content">vibe --version
+uv tool list</div>
+        </div>
+
+        <h4>7.4 y 7.5. Alternativa con pip y actualización</h4>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Alternativa pip (no mezclar con uv)</span><button class="btn-copy" data-copy="pip install mistral-vibe">COPIAR</button></div>
+          <div class="code-content">pip install mistral-vibe</div>
+        </div>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Comprobar y actualizar Vibe</span><button class="btn-copy" data-copy="vibe update&#10;uv tool upgrade mistral-vibe">COPIAR</button></div>
+          <div class="code-content">vibe update
+uv tool upgrade mistral-vibe</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Capítulo 8. Configuración inicial y Modelos</h3>
+        <p>En la primera ejecución Vibe inicia un asistente y guarda tus ajustes en <code>~/.vibe/config.toml</code> (en Windows: <code>$HOME\.vibe\config.toml</code>). Ofrece dos formas de acceso:</p>
+        <ol>
+          <li><strong>Iniciar sesión con tu cuenta de Mistral («Launch browser»):</strong> abre el navegador y gestiona automáticamente las credenciales (incluido en planes Free, Pro y superiores con límites de uso).</li>
+          <li><strong>Usar una clave de API:</strong> generada en «Code &gt; Vibe CLI» o en la consola de Mistral.</li>
+        </ol>
+
+        <div class="url-card">
+          <div><strong>Web de extensiones Vibe CLI de Mistral:</strong></div>
+          <div class="url-text">https://chat.mistral.ai/code/extensions</div>
+          <div class="url-actions">
+            <a href="https://chat.mistral.ai/code/extensions" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://chat.mistral.ai/code/extensions">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="url-card">
+          <div><strong>Consola de Mistral AI:</strong></div>
+          <div class="url-text">https://console.mistral.ai</div>
+          <div class="url-actions">
+            <a href="https://console.mistral.ai" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://console.mistral.ai">COPIAR URL</button>
+          </div>
+        </div>
+
+        <h4>Orden de prioridad de la clave de API</h4>
+        <p>Vibe busca primero en la <strong>variable de entorno de tu shell</strong>, después en <code>~/.vibe/.env</code> y después en el <strong>Administrador de credenciales de Windows</strong>. ¡Una variable de entorno olvidada manda sobre la clave que guardes después!</p>
+
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Definir clave temporal en la sesión</span><button class="btn-copy" data-copy="$env:MISTRAL_API_KEY = &quot;pega-aquí-tu-clave&quot;">COPIAR</button></div>
+          <div class="code-content">$env:MISTRAL_API_KEY = "pega-aquí-tu-clave"</div>
+        </div>
+
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Lanzar asistente de configuración</span><button class="btn-copy" data-copy="vibe --setup">COPIAR</button></div>
+          <div class="code-content">vibe --setup</div>
+        </div>
+
+        <div class="code-box">
+          <div class="code-header"><span>Dentro de Vibe — Verificar estado y cuenta</span><button class="btn-copy" data-copy="/status&#10;/whoami">COPIAR</button></div>
+          <div class="code-content">/status
+/whoami</div>
+        </div>
+
+        <h4>8.8. Modelos de conversación disponibles vía API de Mistral</h4>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Modelo</th><th>Identificador (<code>name</code>)</th><th>Uso recomendado por Mistral</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Mistral Medium 3.5 (recomendado)</td><td><code>mistral-medium-latest</code></td><td>Razonamiento y código de referencia (integrado como <code>mistral-medium-3.5</code>)</td></tr>
+              <tr><td>Z.ai GLM 5.3</td><td><code>zai-glm-5-3</code></td><td>Razonamiento avanzado y código</td></tr>
+              <tr><td>Z.ai GLM 5.2</td><td><code>zai-glm-5-2</code></td><td>Razonamiento avanzado y código</td></tr>
+              <tr><td>Mistral Large 3</td><td><code>mistral-large-latest</code></td><td>Tareas complejas, contexto extenso</td></tr>
+              <tr><td>Mistral Small 4</td><td><code>mistral-small-latest</code></td><td>Uso general rápido y económico</td></tr>
+              <tr><td>Codestral</td><td><code>codestral-latest</code></td><td>Generación y completado de código</td></tr>
+              <tr><td>Ministral 3 14B</td><td><code>ministral-14b-latest</code></td><td>Modelo ligero equilibrado</td></tr>
+              <tr><td>Ministral 3 8B</td><td><code>ministral-8b-latest</code></td><td>Modelo ligero</td></tr>
+              <tr><td>Ministral 3 3B</td><td><code>ministral-3b-latest</code></td><td>El más compacto</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Capítulo 9. Primera ejecución guiada</h3>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Crear archivo de prueba y arrancar Vibe</span><button class="btn-copy" data-copy="Set-Location &quot;$HOME\Documents\vibe-lab&quot;&#10;Set-Content -Path notas.txt -Value &quot;Comprar pan`nLlamar al fontanero`nRevisar el correo&quot; -Encoding utf8&#10;Get-Content notas.txt&#10;vibe">COPIAR</button></div>
+          <div class="code-content">Set-Location "$HOME\Documents\vibe-lab"
+Set-Content -Path notas.txt -Value "Comprar pan`nLlamar al fontanero`nRevisar el correo" -Encoding utf8
+Get-Content notas.txt
+vibe</div>
+        </div>
+
+        <div class="code-box">
+          <div class="code-header"><span>Dentro de Vibe — Primeras peticiones y salida</span><button class="btn-copy" data-copy="Lee el archivo @notas.txt y dime en una frase qué contiene.">COPIAR</button></div>
+          <div class="code-content">Lee el archivo @notas.txt y dime en una frase qué contiene.</div>
+        </div>
+
+        <div class="code-box">
+          <div class="code-header"><span>Dentro de Vibe — Crear lista numerada</span><button class="btn-copy" data-copy="Ahora crea un archivo llamado lista.txt con esas tareas numeradas.">COPIAR</button></div>
+          <div class="code-content">Ahora crea un archivo llamado lista.txt con esas tareas numeradas.</div>
+        </div>
+
+        <div class="code-box">
+          <div class="code-header"><span>Dentro de Vibe — Salir correctamente</span><button class="btn-copy" data-copy="/exit">COPIAR</button></div>
+          <div class="code-content">/exit</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PESTAÑA 3: PROCEDIMIENTO (PARTE III: Caps 10 a 16)
+         ========================================== -->
+    <section class="tab-section" data-t="PROCEDIMIENTO">
+      <div class="card">
+        <h2>PARTE III. APRENDER UTILIZANDO MISTRAL VIBE</h2>
+        <h3>Capítulo 10. Primer contacto práctico</h3>
+        <p>Dentro de <code>$HOME\Documents\vibe-lab</code>, practica las acciones esenciales:</p>
+        <ul>
+          <li><strong>Salto de línea sin enviar:</strong> pulsa <code>Ctrl+J</code> (o <code>Shift+Enter</code> en terminales compatibles).</li>
+          <li><strong>Ejecutar un comando directo en tu shell sin pasar por el modelo:</strong> escribe <code>!dir</code> o <code>!ls</code>.</li>
+          <li><strong>Interrumpir respuesta:</strong> pulsa <code>Escape</code>. Puedes usar <code>/retry</code> si se cortó por error del servidor.</li>
+          <li><strong>Limpiar conversación:</strong> escribe <code>/clear</code> (o su alias <code>/new</code>).</li>
+        </ul>
+
+        <h3>Capítulo 11. Trabajar con archivos y carpetas</h3>
+        <p>Prepara un entorno de práctica con copia de seguridad previa:</p>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Crear entorno ejercicio-archivos y copia</span><button class="btn-copy" data-copy="Set-Location &quot;$HOME\Documents\vibe-lab&quot;&#10;New-Item -ItemType Directory -Path &quot;ejercicio-archivos&quot;&#10;Set-Location &quot;ejercicio-archivos&quot;&#10;&quot;Factura enero&quot; | Set-Content factura-enero.txt&#10;&quot;Factura febrero&quot; | Set-Content factura-febrero.txt&#10;&quot;Receta de tortilla&quot; | Set-Content receta-tortilla.txt&#10;&quot;Foto del perro&quot; | Set-Content foto-perro.txt&#10;Copy-Item -Recurse &quot;$HOME\Documents\vibe-lab\ejercicio-archivos&quot; &quot;$HOME\Documents\vibe-lab\ejercicio-archivos-copia&quot;">COPIAR</button></div>
+          <div class="code-content">Set-Location "$HOME\Documents\vibe-lab"
+New-Item -ItemType Directory -Path "ejercicio-archivos"
+Set-Location "ejercicio-archivos"
+"Factura enero" | Set-Content factura-enero.txt
+"Factura febrero" | Set-Content factura-febrero.txt
+"Receta de tortilla" | Set-Content receta-tortilla.txt
+"Foto del perro" | Set-Content foto-perro.txt
+Copy-Item -Recurse "$HOME\Documents\vibe-lab\ejercicio-archivos" "$HOME\Documents\vibe-lab\ejercicio-archivos-copia"</div>
+        </div>
+        <p>Las menciones con <code>@archivo</code> se transforman en llamadas a <code>read_file</code> (CHANGELOG 2.21.0) y admiten imágenes (<code>.png</code>, <code>.jpg</code>, <code>.jpeg</code>, <code>.gif</code>, <code>.webp</code>) en modelos con visión como Mistral Medium 3.5.</p>
+      </div>
+
+      <div class="card">
+        <h3>Capítulo 12. Aprender a dar instrucciones</h3>
+        <p>Toda buena petición contiene <strong>cinco elementos</strong>: Objetivo, Contexto, Límites, Resultado esperado y Comprobación.</p>
+        <div class="code-box">
+          <div class="code-header"><span>Plantilla universal para pedir a Vibe</span><button class="btn-copy" data-copy="Objetivo: [lo que quiero conseguir]&#10;Contexto: [para qué sirve, quién lo usará]&#10;Límites: [qué no tocar]&#10;Resultado: [archivo o formato esperado]&#10;Comprobación: [cómo verificarlo y qué debes hacer tú para probarlo]">COPIAR</button></div>
+          <div class="code-content">Objetivo: [lo que quiero conseguir]
+Contexto: [para qué sirve, quién lo usará]
+Límites: [qué no tocar]
+Resultado: [archivo o formato esperado]
+Comprobación: [cómo verificarlo y qué debes hacer tú para probarlo]</div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Petición deficiente</th><th>Por qué falla</th><th>Versión mejorada</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>«Haz una web»</td><td>No dice de qué, para quién ni dónde guardarla</td><td>«Crea un único archivo <code>index.html</code> con una página de presentación de una panadería: título, tres secciones (productos, horarios, contacto) y estilo sencillo. No uses librerías externas.»</td></tr>
+              <tr><td>«Arregla esto»</td><td>No indica qué falla</td><td>«Al abrir <code>calculadora.html</code>, el botón de dividir no hace nada. Revisa el código, explica la causa y corrígela cambiando solo lo necesario.»</td></tr>
+              <tr><td>«Borra los archivos que sobren»</td><td>Peligroso y subjetivo</td><td>«Lista los archivos que parecen temporales (terminan en <code>.tmp</code> o <code>.bak</code>) y no borres nada. Espera mi confirmación.»</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Archivo AGENTS.md para contexto permanente</h4>
+        <div class="code-box">
+          <div class="code-header"><span>Ejemplo de archivo AGENTS.md</span><button class="btn-copy" data-copy="# Instrucciones del proyecto&#10;- Escribe siempre en español de España.&#10;- No instales programas ni uses librerías externas sin preguntar.&#10;- Cuando cambies un archivo, resume qué cambiaste en dos líneas.">COPIAR</button></div>
+          <div class="code-content"># Instrucciones del proyecto
+- Escribe siempre en español de España.
+- No instales programas ni uses librerías externas sin preguntar.
+- Cuando cambies un archivo, resume qué cambiaste en dos líneas.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Capítulo 13. Herramientas de MISTRAL VIBE</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Herramienta</th><th>Función principal</th><th>Precauciones</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>read_file</code></td><td>Lee un archivo (antes llamada <code>read</code>).</td><td>Vibe pide confirmación para <code>.env</code> y <code>.envrc</code>.</td></tr>
+              <tr><td><code>write_file</code></td><td>Crea un archivo nuevo. Se niega a sobrescribir existentes.</td><td>Revisa nombre y carpeta de destino.</td></tr>
+              <tr><td><code>edit</code></td><td>Modifica parte de un archivo existente mostrando diff (antes <code>search_replace</code>).</td><td>Con <code>accept-edits</code> se aprueba sola; lee el diff.</td></tr>
+              <tr><td><code>grep</code></td><td>Busca texto recursivamente (usa <code>ripgrep</code> si está disponible).</td><td>Es búsqueda literal, no de significado.</td></tr>
+              <tr><td>Shell (<code>bash</code>, <code>git_bash</code>, <code>powershell</code>)</td><td>Ejecuta comandos del sistema (en Windows asignado por experimento A/B).</td><td>Máximo riesgo. Lee cada comando antes de aprobar.</td></tr>
+              <tr><td><code>todo</code></td><td>Lleva lista visible de tareas (<code>Ctrl+T</code>).</td><td>Informativa.</td></tr>
+              <tr><td><code>ask_user_question</code></td><td>Te hace preguntas con opciones para aclarar dudas.</td><td>No funciona en modo programático.</td></tr>
+              <tr><td><code>task</code></td><td>Delega trabajo a un subagente (ej. <code>explore</code>).</td><td>Hereda permisos de sesión.</td></tr>
+              <tr><td><code>skill</code></td><td>Carga una Skill reutilizable.</td><td>Solo de carpetas de confianza.</td></tr>
+              <tr><td><code>web_search</code> / <code>web_fetch</code></td><td>Busca en internet y recupera páginas web (desde v2.3.0).</td><td>Peligro de inyección de instrucciones desde webs externas.</td></tr>
+              <tr><td><code>exit_plan_mode</code></td><td>Presenta un plan y sale del modo <code>plan</code>.</td><td>Seguro.</td></tr>
+              <tr><td><code>{servidor}_{herramienta}</code></td><td>Herramientas aportadas por servidores MCP externos.</td><td>Mantén <code>permission = "ask"</code>.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Capítulo 14. Agentes y subagentes</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Agente</th><th>Qué aprueba solo</th><th>Para qué sirve</th><th>Estado</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>ask</code></td><td>Nada: pide validación para todo</td><td>Explorar proyecto desconocido</td><td><span class="badge badge-oficial">OFICIAL</span></td></tr>
+              <tr><td><code>plan</code></td><td>Solo lectura (<code>grep</code>, <code>read_file</code>)</td><td>Planificar sin tocar nada</td><td><span class="badge badge-oficial">OFICIAL</span></td></tr>
+              <tr><td><code>accept-edits</code></td><td>Ediciones de archivos. Pregunta por shell</td><td>Trabajo diario (Agente por defecto)</td><td><span class="badge badge-oficial">OFICIAL</span></td></tr>
+              <tr><td><code>smart-approve</code></td><td>Clasificador IA decide riesgo</td><td>Menos interrupciones (<code>vibe --smart-approve</code>)</td><td><span class="badge badge-limitado">LIMITADO</span></td></tr>
+              <tr><td><code>auto-approve</code></td><td>Todo, incluidos comandos shell (<code>--yolo</code>)</td><td>Solo entornos aislados y desechables</td><td><span class="badge badge-oficial">OFICIAL (RIESGO ALTO)</span></td></tr>
+              <tr><td><code>lean</code></td><td>Demostración de teoremas</td><td>Solo si figura en <code>installed_agents</code></td><td><span class="badge badge-limitado">LIMITADO</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Crear un agente propio de solo lectura (<code>revisor.toml</code>)</h4>
+        <div class="code-box">
+          <div class="code-header"><span>Archivo $HOME\.vibe\agents\revisor.toml</span><button class="btn-copy" data-copy="# Agente de revisión: solo lee, no modifica&#10;disabled_tools = [&quot;edit&quot;, &quot;write_file&quot;]&#10;&#10;[tools.read_file]&#10;permission = &quot;always&quot;">COPIAR</button></div>
+          <div class="code-content"># Agente de revisión: solo lee, no modifica
+disabled_tools = ["edit", "write_file"]
+
+[tools.read_file]
+permission = "always"</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Capítulo 15. Comandos y navegación</h3>
+        <h4>Opciones al arrancar Vibe desde PowerShell</h4>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Orden en PowerShell</th><th>Qué hace</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>vibe</code> / <code>vibe "texto"</code></td><td>Arranca sesión interactiva (opcionalmente con primera petición).</td></tr>
+              <tr><td><code>vibe --version</code> / <code>vibe --setup</code></td><td>Muestra versión / Repite asistente de configuración.</td></tr>
+              <tr><td><code>vibe update</code> / <code>vibe --check-upgrade</code></td><td>Comprueba si hay versión nueva.</td></tr>
+              <tr><td><code>vibe --agent NOMBRE</code></td><td>Elige el agente inicial.</td></tr>
+              <tr><td><code>vibe --continue</code> (o <code>-c</code>) / <code>vibe --resume</code></td><td>Reanuda última sesión de la carpeta / Abre selector de sesiones.</td></tr>
+              <tr><td><code>vibe --workdir RUTA</code> / <code>vibe --add-dir RUTA</code></td><td>Fija carpeta de trabajo / Da acceso a otra carpeta adicional.</td></tr>
+              <tr><td><code>vibe --worktree NOMBRE</code> / <code>vibe --trust</code></td><td>Trabaja en worktree de Git / Confía en la carpeta solo en esa ejecución.</td></tr>
+              <tr><td><code>vibe --prompt "texto"</code> (o <code>-p</code>)</td><td>Modo programático no interactivo.</td></tr>
+              <tr><td><code>vibe mcp add</code> / <code>vibe mcp remove</code></td><td>Gestiona servidores MCP remotos.</td></tr>
+              <tr><td><code>vibe config schema</code></td><td>Muestra el esquema JSON de la configuración.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Comandos con barra (<code>/</code>) dentro de Vibe y Atajos de teclado</h4>
+        <p>Escribe <code>/help</code> para ver la autoridad en tu versión: <code>/exit</code>, <code>/config</code>, <code>/model</code>, <code>/theme</code>, <code>/status</code>, <code>/whoami</code>, <code>/resume</code>, <code>/clear</code> (o <code>/new</code>), <code>/compact</code>, <code>/rewind</code>, <code>/retry</code>, <code>/rename</code>, <code>/copy</code>, <code>/mcp</code> (o <code>/connectors</code>), <code>/voice</code>, <code>/loop</code>, <code>/log-level</code>, <code>/data-retention</code>, <code>/release-notes</code>, <code>/proxy-setup</code>, <code>/skills</code>, <code>/plugins</code>, <code>/teleport</code>.</p>
+        <p><strong>Atajos clave:</strong> <code>Ctrl+J</code> (salto de línea), <code>Shift+Tab</code> (cambiar agente), <code>Ctrl+T</code> (lista de tareas), <code>Ctrl+O</code> (resultados de herramientas), <code>Ctrl+G</code> (editor externo), <code>Ctrl+\</code> (consola de depuración), <code>Escape</code> (interrumpir; dos veces vacío: rebobinar).</p>
+      </div>
+
+      <div class="card">
+        <h3>Capítulo 16. Configuración personalizada (config.toml)</h3>
+        <p>El archivo del proyecto (<code>.vibe\config.toml</code>) manda sobre el de usuario (<code>$HOME\.vibe\config.toml</code>). Aquí tienes el ejemplo completo y comentado:</p>
+        <div class="code-box">
+          <div class="code-header"><span>Ejemplo completo config.toml</span><button class="btn-copy" data-copy="# ~/.vibe/config.toml (en Windows: C:\Users\TU_USUARIO\.vibe\config.toml)&#10;&#10;default_agent = &quot;accept-edits&quot;&#10;active_model = &quot;mistral-medium-3.5&quot;&#10;theme = &quot;auto&quot;&#10;&#10;enable_update_checks = true&#10;enable_notifications = true&#10;enable_telemetry = true&#10;ask_confirmation_on_exit = true&#10;outside_workdir = &quot;deny&quot;&#10;&#10;[tools.read_file]&#10;permission = &quot;always&quot;&#10;&#10;[tools.bash]&#10;permission = &quot;ask&quot;&#10;allowlist = [&quot;git status&quot;]&#10;denylist = [&quot;rm -rf&quot;]&#10;&#10;[tools.write_file]&#10;permission = &quot;ask&quot;&#10;&#10;[[models]]&#10;name = &quot;codestral-latest&quot;&#10;provider = &quot;mistral&quot;&#10;alias = &quot;codestral&quot;">COPIAR</button></div>
+          <div class="code-content"># ~/.vibe/config.toml (en Windows: C:\Users\TU_USUARIO\.vibe\config.toml)
+
+default_agent = "accept-edits"
+active_model = "mistral-medium-3.5"
+theme = "auto"
+
+enable_update_checks = true
+enable_notifications = true
+enable_telemetry = true
+ask_confirmation_on_exit = true
+outside_workdir = "deny"
+
+[tools.read_file]
+permission = "always"
+
+[tools.bash]
+permission = "ask"
+allowlist = ["git status"]
+denylist = ["rm -rf"]
+
+[tools.write_file]
+permission = "ask"
+
+[[models]]
+name = "codestral-latest"
+provider = "mistral"
+alias = "codestral"</div>
+        </div>
+        <p>Si Vibe deja de arrancar tras editar <code>config.toml</code>, renómbralo en PowerShell con: <code>Rename-Item "$HOME\.vibe\config.toml" "config.toml.bkp"</code>.</p>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PESTAÑA 4: AVANZADO (PARTE IV: Caps 17 a 22)
+         ========================================== -->
+    <section class="tab-section" data-t="AVANZADO">
+      <div class="card">
+        <h2>PARTE IV. NIVEL AVANZADO Y PROFESIONAL</h2>
+        <h3>Capítulo 17. Automatización de tareas (Modo programático)</h3>
+        <p>En modo programático (<code>vibe --prompt "..."</code>) no hay nadie para responder permisos, por lo que Vibe <strong>rechaza</strong> toda herramienta que requiera confirmación según el agente activo. Usa siempre límites de turnos y precio:</p>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Automatización segura con límites</span><button class="btn-copy" data-copy="vibe --prompt &quot;Lee todos los archivos .txt de esta carpeta y crea un archivo resumen.md con una línea por archivo.&quot; --max-turns 8 --max-price 0.50 --enabled-tools read_file --enabled-tools write_file --enabled-tools grep">COPIAR</button></div>
+          <div class="code-content">vibe --prompt "Lee todos los archivos .txt de esta carpeta y crea un archivo resumen.md con una línea por archivo." --max-turns 8 --max-price 0.50 --enabled-tools read_file --enabled-tools write_file --enabled-tools grep</div>
+        </div>
+
+        <h3>Capítulo 18. Desarrollo de aplicaciones</h3>
+        <p>Para abrir cualquier archivo HTML creado por Vibe desde PowerShell usa: <code>Start-Process index.html</code>. Sigue siempre el ciclo: <strong>crear carpeta → copia o commit → pedir plan con agente <code>plan</code> → cambiar a <code>accept-edits</code> y construir → probar con valores conocidos → corregir</strong>.</p>
+
+        <h3>Capítulo 19. Gestión de proyectos reales con Git</h3>
+        <div class="url-card">
+          <div><strong>Descargar Git para Windows:</strong></div>
+          <div class="url-text">https://git-scm.com/download/win</div>
+          <div class="url-actions">
+            <a href="https://git-scm.com/download/win" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://git-scm.com/download/win">COPIAR URL</button>
+          </div>
+        </div>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Los 5 comandos esenciales de Git</span><button class="btn-copy" data-copy="git init&#10;git add .&#10;git commit -m &quot;Descripción corta del cambio&quot;&#10;git status&#10;git diff">COPIAR</button></div>
+          <div class="code-content">git init
+git add .
+git commit -m "Descripción corta del cambio"
+git status
+git diff</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Capítulo 20. Integraciones: MCP, Skills, Hooks y Editores (ACP)</h3>
+        <h4>20.1. Servidores MCP (Model Context Protocol) <span class="badge badge-oficial">OFICIAL</span></h4>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Añadir y quitar servidores MCP</span><button class="btn-copy" data-copy="vibe mcp add linear --url https://mcp.linear.app/mcp&#10;vibe mcp add mistralai --url https://api.mistral.ai/mcp --transport streamable-http --api-key-env MISTRAL_API_KEY&#10;vibe mcp remove linear">COPIAR</button></div>
+          <div class="code-content">vibe mcp add linear --url https://mcp.linear.app/mcp
+vibe mcp add mistralai --url https://api.mistral.ai/mcp --transport streamable-http --api-key-env MISTRAL_API_KEY
+vibe mcp remove linear</div>
+        </div>
+
+        <h4>20.2. Skills reutilizables (<code>SKILL.md</code>) <span class="badge badge-oficial">OFICIAL</span></h4>
+        <div class="code-box">
+          <div class="code-header"><span>Archivo ~/.vibe/skills/code-review/SKILL.md</span><button class="btn-copy" data-copy="---&#10;name: code-review&#10;description: Perform automated code reviews&#10;license: MIT&#10;compatibility: Python 3.12+&#10;user-invocable: true&#10;allowed-tools:&#10;  - read&#10;  - grep&#10;  - ask_user_question&#10;---&#10;&#10;# Code Review Skill&#10;&#10;This skill helps analyze code quality and suggest improvements.">COPIAR</button></div>
+          <div class="code-content">---
+name: code-review
+description: Perform automated code reviews
+license: MIT
+compatibility: Python 3.12+
+user-invocable: true
+allowed-tools:
+  - read
+  - grep
+  - ask_user_question
+---
+
+# Code Review Skill
+
+This skill helps analyze code quality and suggest improvements.</div>
+        </div>
+
+        <h4>20.6. Hooks (<code>hooks.toml</code>) <span class="badge badge-oficial">OFICIAL</span></h4>
+        <div class="code-box">
+          <div class="code-header"><span>Ejemplo .vibe/hooks.toml</span><button class="btn-copy" data-copy="[[hooks]]&#10;name = &quot;deny-rm-rf&quot;&#10;type = &quot;pre_tool&quot;&#10;match = &quot;bash&quot;&#10;command = &quot;uv run python /path/to/guard-bash&quot;&#10;timeout = 60.0&#10;description = &quot;Reject dangerous shell commands.&quot;">COPIAR</button></div>
+          <div class="code-content">[[hooks]]
+name = "deny-rm-rf"
+type = "pre_tool"
+match = "bash"
+command = "uv run python /path/to/guard-bash"
+timeout = 60.0
+description = "Reject dangerous shell commands."</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Capítulos 21 y 22. Seguridad, Buenas Prácticas y Dominio Profesional</h3>
+        <h4>Panel de aprobación de herramientas</h4>
+        <ul>
+          <li><code>1</code> o <code>y</code>: Permitir esta vez.</li>
+          <li><code>2</code>: Permitir durante el resto de la sesión.</li>
+          <li><code>3</code>: Permitir siempre (se guarda; evítalo salvo en acciones inocuas).</li>
+          <li><code>4</code>, <code>n</code> o <code>Escape</code>: Denegar.</li>
+        </ul>
+
+        <h4>Lista de comprobación interactiva antes de cada sesión (se guarda automáticamente)</h4>
+        <div id="checklist-security">
+          <label class="check-item"><input type="checkbox" data-check="sec1"> <span>1. ¿Estoy situado exactamente en la carpeta del proyecto (y nunca en <code>C:\Users\TuNombre</code>)?</span></label>
+          <label class="check-item"><input type="checkbox" data-check="sec2"> <span>2. ¿Tengo una copia de seguridad de la carpeta o un <code>git commit</code> reciente?</span></label>
+          <label class="check-item"><input type="checkbox" data-check="sec3"> <span>3. ¿El agente elegido es el adecuado (<code>plan</code> para explorar, <code>accept-edits</code> para construir)?</span></label>
+          <label class="check-item"><input type="checkbox" data-check="sec4"> <span>4. ¿He verificado que no hay claves de API ni secretos expuestos en archivos del proyecto?</span></label>
+          <label class="check-item"><input type="checkbox" data-check="sec5"> <span>5. ¿Me comprometo a leer cada diff y cada comando de shell antes de pulsar <code>1</code>?</span></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PESTAÑA 5: PRÁCTICA (PARTE V: 10 LABS + PARTE IX EVALUACIÓN)
+         ========================================== -->
+    <section class="tab-section" data-t="PRÁCTICA (10 LABS)">
+      <div class="card">
+        <h2>PARTE V. LABORATORIO PRÁCTICO (10 PROYECTOS GUIADOS)</h2>
+        <p>Diez proyectos de dificultad creciente dentro de <code>$HOME\Documents\vibe-lab</code>. Marca cada proyecto a medida que lo completes:</p>
+
+        <div id="checklist-labs" style="margin-bottom: 16px;">
+          <label class="check-item"><input type="checkbox" data-check="lab1"> <span><strong>Proyecto 1:</strong> Explorar una carpeta sin tocarla con <code>--agent plan</code>.</span></label>
+          <label class="check-item"><input type="checkbox" data-check="lab2"> <span><strong>Proyecto 2:</strong> Crear y editar archivos de texto (<code>compra.txt</code> con 13 líneas ordenadas).</span></label>
+          <label class="check-item"><input type="checkbox" data-check="lab3"> <span><strong>Proyecto 3:</strong> Organizar una carpeta de 12 archivos con copia de seguridad previa.</span></label>
+          <label class="check-item"><input type="checkbox" data-check="lab4"> <span><strong>Proyecto 4:</strong> Página web de una sola hoja (<code>index.html</code>) responsiva.</span></label>
+          <label class="check-item"><input type="checkbox" data-check="lab5"> <span><strong>Proyecto 5:</strong> Conversor de unidades en HTML validando coma y punto decimal.</span></label>
+          <label class="check-item"><input type="checkbox" data-check="lab6"> <span><strong>Proyecto 6:</strong> Cuaderno de gastos con JavaScript, persistencia y control de redondeo.</span></label>
+          <label class="check-item"><input type="checkbox" data-check="lab7"> <span><strong>Proyecto 7:</strong> Configuración segura propia con agente <code>revisor.toml</code>.</span></label>
+          <label class="check-item"><input type="checkbox" data-check="lab8"> <span><strong>Proyecto 8:</strong> Automatización en modo programático con <code>--max-turns 8 --max-price 0.50</code>.</span></label>
+          <label class="check-item"><input type="checkbox" data-check="lab9"> <span><strong>Proyecto 9:</strong> Cazar un error en código con diagnóstico previo y <code>git diff</code>.</span></label>
+          <label class="check-item"><input type="checkbox" data-check="lab10"> <span><strong>Proyecto 10:</strong> Crear reglas permanentes en <code>AGENTS.md</code> y una Skill propia.</span></label>
+        </div>
+
+        <details class="collapsible" open>
+          <summary>Proyectos 1 a 5 — Nivel Inicial a Intermedio</summary>
+          <div class="collapsible-body">
+            <h4>Proyecto 1. Explorar una carpeta sin tocarla</h4>
+            <p><strong>Preparación:</strong> Carpeta <code>p01</code> con tres archivos de texto. Arranca <code>vibe --agent plan</code>.<br>
+            <strong>Petición:</strong> <em>«Explica qué hay en esta carpeta, para qué sirve cada archivo y qué problemas ves. No modifiques nada.»</em><br>
+            <strong>Comprobación:</strong> <code>Get-ChildItem | Format-Table Name, LastWriteTime</code> confirma que no hubo cambios.</p>
+
+            <h4>Proyecto 2. Crear y editar archivos de texto</h4>
+            <p><strong>Preparación:</strong> Carpeta <code>p02</code>. Arranca <code>vibe</code>.<br>
+            <strong>Petición:</strong> <em>«Crea compra.txt con diez productos de una despensa básica, uno por línea.»</em> Luego: <em>«Añade al final tres productos de limpieza y ordena todo alfabéticamente.»</em><br>
+            <strong>Comprobación:</strong> <code>(Get-Content compra.txt).Count</code> debe dar 13.</p>
+
+            <h4>Proyecto 3. Organizar una carpeta con copia de seguridad</h4>
+            <p><strong>Preparación:</strong> Carpeta <code>p03</code> con 12 archivos variados y copia con <code>Copy-Item -Recurse p03 p03-copia</code>.<br>
+            <strong>Petición:</strong> Con <code>plan</code>: <em>«Propón subcarpetas y qué archivo va en cada una. No muevas nada.»</em> Con <code>accept-edits</code>: <em>«Ejecuta el plan. No borres ni renombres archivos.»</em><br>
+            <strong>Comprobación:</strong> <code>(Get-ChildItem p03 -Recurse -File).Count</code> debe dar 12.</p>
+
+            <h4>Proyecto 4. Una página web de una sola hoja</h4>
+            <p><strong>Preparación:</strong> Carpeta <code>p04</code>. Crea <code>index.html</code> y <code>estilos.css</code>. Ábrela con <code>Start-Process index.html</code> y comprueba vista móvil (F12).</p>
+
+            <h4>Proyecto 5. Conversor de unidades en HTML</h4>
+            <p><strong>Preparación:</strong> Carpeta <code>p05</code>. Crea <code>conversor.html</code> (km a millas, kg a libras, °C a °F).<br>
+            <strong>Comprobación matemática:</strong> $10\text{ km} \approx 6.21\text{ millas}$; $100\,^\circ\text{C} = 212\,^\circ\text{F}$; $1\text{ kg} \approx 2.20\text{ libras}$.</p>
+          </div>
+        </details>
+
+        <details class="collapsible">
+          <summary>Proyectos 6 a 10 — Nivel Intermedio a Avanzado</summary>
+          <div class="collapsible-body">
+            <h4>Proyecto 6. Cuaderno de gastos con JavaScript</h4>
+            <p><strong>Preparación:</strong> Carpeta <code>p06</code>, <code>git init</code> y <code>git commit --allow-empty -m "inicio"</code>.<br>
+            <strong>Comprobación:</strong> Añade tres gastos de $10$, $20.5$ y $0.3$ euros: la suma debe ser exactamente $30.8$ (sin errores de coma flotante como $30.800000000000004$).</p>
+
+            <h4>Proyecto 7. Configuración segura propia</h4>
+            <p>Usa el agente <code>revisor.toml</code> sobre <code>p06</code> y comprueba con <code>git status</code> que no modificó nada.</p>
+
+            <h4>Proyecto 8. Automatización con límites</h4>
+            <p>En <code>p08</code> con cinco archivos <code>.txt</code>, ejecuta <code>vibe --prompt "Lee los .txt de esta carpeta y crea resumen.md con una línea por archivo" --max-turns 8 --max-price 0.50</code>.</p>
+
+            <h4>Proyecto 9. Cazar un error con Git</h4>
+            <p>En <code>p09</code>, cambia en el código $1.8$ por $1.7$ en la fórmula de Fahrenheit. Pide diagnóstico sin corregir (da $211$ en lugar de $212$ para $100\,^\circ\text{C}$) y luego pide corregir solo esa línea verificando con <code>git diff</code>.</p>
+
+            <h4>Proyecto 10. Skill y reglas propias</h4>
+            <p>En <code>p10</code>, combina <code>AGENTS.md</code> con una Skill en <code>$HOME\.vibe\skills\revision-simple\SKILL.md</code> con <code>user-invocable: true</code>.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <h2>PARTE IX. EVALUACIÓN FINAL (MÁXIMO 90 PUNTOS)</h2>
+        <p>Realízala en <code>$HOME\Documents\vibe-lab\evaluacion</code> sin mirar el tutorial:</p>
+        <ul>
+          <li><strong>Prueba 1. Instalación (10 pts):</strong> Demostrar versión de Windows, uv, Vibe y <code>uv tool list</code>.</li>
+          <li><strong>Prueba 2. Configuración (10 pts):</strong> <code>/status</code>, <code>/whoami</code>, cambiar <code>default_agent</code>, crear <code>lector.toml</code> y explicar protección de API Key.</li>
+          <li><strong>Prueba 3. Utilización (10 pts):</strong> Organizar 10 archivos con copia previa, plan y recuento final intacto.</li>
+          <li><strong>Prueba 4. Desarrollo (10 pts):</strong> Crear calculadora de descuentos en un archivo aplicando los 5 elementos del cap. 12.</li>
+          <li><strong>Prueba 5. Resolución de errores (10 pts):</strong> Diagnóstico sin cambios y corrección mínima demostrada con <code>git diff</code>.</li>
+          <li><strong>Prueba 6. Seguridad (10 pts):</strong> Explicar riesgos de <code>auto-approve</code>, <code>outside_workdir = "deny"</code>, permisos de shell y confianza de carpetas.</li>
+          <li><strong>Proyecto final integrador (30 pts):</strong> «Agenda de contactos» en HTML+JS con Git, <code>AGENTS.md</code>, plan en 3 pasos con commits, Skill de revisión, agente de solo lectura y generación de <code>README.md</code> en modo programático.</li>
+        </ul>
+        <p class="muted"><strong>Escala:</strong> $76\text{ a }90\text{ pts}$ = Dominio avanzado | $60\text{ a }75\text{ pts}$ = Intermedio-alto | $40\text{ a }59\text{ pts}$ = Intermedio | $&lt;40\text{ pts}$ = Inicial.</p>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PESTAÑA 6: PROMPTS (TODOS LOS PROMPTS REPETIDOS Y DOCUMENTADOS)
+         ========================================== -->
+    <section class="tab-section" data-t="PROMPTS">
+      <div class="card">
+        <h2>CATÁLOGO COMPLETO DE PROMPTS DEL TUTORIAL</h2>
+        <p>Esta pestaña recopila <strong>todos los prompts e instrucciones</strong> que aparecen a lo largo del tutorial, listos para copiar con un clic y acompañados de una breve descripción de en qué capítulo o proyecto se emplean.</p>
+
+        <!-- Prompt 1 -->
+        <div class="code-box">
+          <div class="code-header"><span>1. Búsqueda de tareas pendientes (Cap. 1.1 — Introducción)</span><button class="btn-copy" data-copy="busca todos los TODO de este proyecto">COPIAR PROMPT</button></div>
+          <div class="code-content">busca todos los TODO de este proyecto</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 1.1. Ejemplo inicial de cómo pedir en lenguaje natural que Vibe explore carpetas y busque marcas en el código.</p>
+
+        <!-- Prompt 2 -->
+        <div class="code-box">
+          <div class="code-header"><span>2. Lectura y resumen de archivo (Cap. 9.4 y Cap. 13.1 — Primera ejecución)</span><button class="btn-copy" data-copy="Lee el archivo @notas.txt y dime en una frase qué contiene.">COPIAR PROMPT</button></div>
+          <div class="code-content">Lee el archivo @notas.txt y dime en una frase qué contiene.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 9.4 (Primera ejecución guiada). Enseña a referenciar archivos con <code>@</code> para activar la herramienta <code>read_file</code>.</p>
+
+        <!-- Prompt 3 -->
+        <div class="code-box">
+          <div class="code-header"><span>3. Creación de archivo numerado (Cap. 9.5 — Primera ejecución)</span><button class="btn-copy" data-copy="Ahora crea un archivo llamado lista.txt con esas tareas numeradas.">COPIAR PROMPT</button></div>
+          <div class="code-content">Ahora crea un archivo llamado lista.txt con esas tareas numeradas.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 9.5. Demuestra cómo Vibe utiliza la herramienta <code>write_file</code> para crear un archivo nuevo en disco.</p>
+
+        <!-- Prompt 4 -->
+        <div class="code-box">
+          <div class="code-header"><span>4. Exploración de archivos de la carpeta (Cap. 10.1 — Ejercicio 1)</span><button class="btn-copy" data-copy="¿Qué archivos hay en esta carpeta y para qué crees que sirve cada uno?">COPIAR PROMPT</button></div>
+          <div class="code-content">¿Qué archivos hay en esta carpeta y para qué crees que sirve cada uno?</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 10.1 (Primer contacto práctico). Sirve para que Vibe liste e interprete los archivos del directorio de trabajo.</p>
+
+        <!-- Prompt 5 -->
+        <div class="code-box">
+          <div class="code-header"><span>5. Petición multilínea paso a paso (Cap. 10.2 — Ejercicio 2)</span><button class="btn-copy" data-copy="Quiero que hagas lo siguiente:&#10;1. Lee @notas.txt&#10;2. Añade una cuarta tarea: &quot;Pagar el recibo de la luz&quot;&#10;3. Muéstrame el resultado final">COPIAR PROMPT</button></div>
+          <div class="code-content">Quiero que hagas lo siguiente:
+1. Lee @notas.txt
+2. Añade una cuarta tarea: "Pagar el recibo de la luz"
+3. Muéstrame el resultado final</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 10.2. Practica el uso de <code>Ctrl+J</code> para escribir varias líneas y ver cómo la herramienta <code>edit</code> muestra un diff.</p>
+
+        <!-- Prompt 6 -->
+        <div class="code-box">
+          <div class="code-header"><span>6. Respuesta extensa para probar interrupción con Escape (Cap. 10.4 — Ejercicio 4)</span><button class="btn-copy" data-copy="Explícame con detalle qué es un archivo de texto plano y da diez ejemplos.">COPIAR PROMPT</button></div>
+          <div class="code-content">Explícame con detalle qué es un archivo de texto plano y da diez ejemplos.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 10.4. Se utiliza para lanzar una respuesta larga y practicar cómo detenerla en seco pulsando la tecla <code>Escape</code>.</p>
+
+        <!-- Prompt 7 -->
+        <div class="code-box">
+          <div class="code-header"><span>7. Clasificación sin modificar archivos (Cap. 11.3 — Trabajar con archivos)</span><button class="btn-copy" data-copy="Lista los archivos de esta carpeta y clasifícalos por tema, sin mover ni modificar nada.">COPIAR PROMPT</button></div>
+          <div class="code-content">Lista los archivos de esta carpeta y clasifícalos por tema, sin mover ni modificar nada.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 11.3. Enseña a incluir límites explícitos («sin mover ni modificar nada») al analizar directorios.</p>
+
+        <!-- Prompt 8 -->
+        <div class="code-box">
+          <div class="code-header"><span>8. Resumen múltiple con menciones @ (Cap. 11.3.1 — Referenciar archivos)</span><button class="btn-copy" data-copy="Resume en una línea @factura-enero.txt y @receta-tortilla.txt">COPIAR PROMPT</button></div>
+          <div class="code-content">Resume en una línea @factura-enero.txt y @receta-tortilla.txt</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 11.3.1. Muestra cómo referenciar dos o más archivos en una misma frase mediante el autocompletado con <code>@</code>.</p>
+
+        <!-- Prompt 9 -->
+        <div class="code-box">
+          <div class="code-header"><span>9. Creación de índice descriptivo (Cap. 11.4 — Crear archivos)</span><button class="btn-copy" data-copy="Crea un archivo indice.txt con la lista de todos los archivos de esta carpeta y una descripción de una línea de cada uno.">COPIAR PROMPT</button></div>
+          <div class="code-content">Crea un archivo indice.txt con la lista de todos los archivos de esta carpeta y una descripción de una línea de cada uno.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 11.4. Genera un archivo índice a partir de la lectura de todos los elementos de la carpeta.</p>
+
+        <!-- Prompt 10 -->
+        <div class="code-box">
+          <div class="code-header"><span>10. Edición puntual de una línea (Cap. 11.4 — Modificar archivos)</span><button class="btn-copy" data-copy="En indice.txt, cambia la descripción de foto-perro.txt para que diga que es un archivo de prueba.">COPIAR PROMPT</button></div>
+          <div class="code-content">En indice.txt, cambia la descripción de foto-perro.txt para que diga que es un archivo de prueba.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 11.4. Practica la edición quirúrgica sobre un archivo existente usando <code>edit</code>.</p>
+
+        <!-- Prompt 11 -->
+        <div class="code-box">
+          <div class="code-header"><span>11. Plan de organización de subcarpetas (Cap. 11.5 — Organizar directorios)</span><button class="btn-copy" data-copy="Propón cómo organizar estos archivos en subcarpetas, pero no hagas nada todavía. Dime los nombres de las carpetas y qué archivo iría en cada una.">COPIAR PROMPT</button></div>
+          <div class="code-content">Propón cómo organizar estos archivos en subcarpetas, pero no hagas nada todavía. Dime los nombres de las carpetas y qué archivo iría en cada una.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 11.5. Ejemplo fundamental de pedir primero el plan antes de autorizar movimientos de archivos.</p>
+
+        <!-- Prompt 12 -->
+        <div class="code-box">
+          <div class="code-header"><span>12. Ejecución segura del plan de carpetas (Cap. 11.5 — Organizar directorios)</span><button class="btn-copy" data-copy="Ejecuta ese plan. No borres ningún archivo.">COPIAR PROMPT</button></div>
+          <div class="code-content">Ejecuta ese plan. No borres ningún archivo.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 11.5. Ordena llevar a cabo el plan aprobado manteniendo la prohibición expresa de borrar archivos.</p>
+
+        <!-- Prompt 13 -->
+        <div class="code-box">
+          <div class="code-header"><span>13. Búsqueda de texto con grep (Cap. 11.6 — Buscar información)</span><button class="btn-copy" data-copy="Busca en todos los archivos la palabra &quot;Factura&quot; y dime en cuáles aparece.">COPIAR PROMPT</button></div>
+          <div class="code-content">Busca en todos los archivos la palabra "Factura" y dime en cuáles aparece.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 11.6. Activa la herramienta <code>grep</code> para localizar texto literal dentro de la carpeta.</p>
+
+        <!-- Prompt 14 -->
+        <div class="code-box">
+          <div class="code-header"><span>14. Plantilla de los 5 elementos de una buena petición (Cap. 12.1)</span><button class="btn-copy" data-copy="Objetivo: [lo que quiero conseguir]&#10;Contexto: [para qué sirve, quién lo usará]&#10;Límites: [qué no tocar]&#10;Resultado: [archivo o formato esperado]&#10;Comprobación: [cómo verificarlo y qué debes hacer tú para probarlo]">COPIAR PROMPT</button></div>
+          <div class="code-content">Objetivo: [lo que quiero conseguir]
+Contexto: [para qué sirve, quién lo usará]
+Límites: [qué no tocar]
+Resultado: [archivo o formato esperado]
+Comprobación: [cómo verificarlo y qué debes hacer tú para probarlo]</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 12.1. Estructura maestra para redactar instrucciones claras y sin ambigüedades.</p>
+
+        <!-- Prompts 15 a 19 (Tabla Cap 12.2) -->
+        <div class="code-box">
+          <div class="code-header"><span>15. Peticiones mejoradas de ejemplo (Cap. 12.2 — Tabla comparativa)</span><button class="btn-copy" data-copy="Crea un único archivo index.html con una página de presentación de una panadería: título, tres secciones (productos, horarios, contacto) y estilo sencillo. No uses librerías externas.&#10;&#10;Al abrir calculadora.html, el botón de dividir no hace nada. Revisa el código, explica la causa y corrígela cambiando solo lo necesario.&#10;&#10;Haz el código más fácil de leer: nombres de variables claros y comentarios breves. No cambies lo que hace.&#10;&#10;Lista los archivos que parecen temporales (terminan en .tmp o .bak) y no borres nada. Espera mi confirmación.&#10;&#10;Paso 1: lee las facturas .txt de esta carpeta y crea un resumen resumen.csv con fecha y total. Solo eso.">COPIAR PROMPTS</button></div>
+          <div class="code-content">Crea un único archivo index.html con una página de presentación de una panadería: título, tres secciones (productos, horarios, contacto) y estilo sencillo. No uses librerías externas.
+
+Al abrir calculadora.html, el botón de dividir no hace nada. Revisa el código, explica la causa y corrígela cambiando solo lo necesario.
+
+Haz el código más fácil de leer: nombres de variables claros y comentarios breves. No cambies lo que hace.
+
+Lista los archivos que parecen temporales (terminan en .tmp o .bak) y no borres nada. Espera mi confirmación.
+
+Paso 1: lee las facturas .txt de esta carpeta y crea un resumen resumen.csv con fecha y total. Solo eso.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplean:</strong> Capítulo 12.2. Cinco ejemplos de cómo transformar peticiones vagas («haz una web», «arregla esto») en órdenes precisas.</p>
+
+        <!-- Prompt 20 y 21 -->
+        <div class="code-box">
+          <div class="code-header"><span>16. Pedir explicaciones y reportar fallos (Cap. 12.5 y 12.6)</span><button class="btn-copy" data-copy="Después de crear la página, explícame en lenguaje sencillo qué hace cada parte y dime exactamente cómo abrirla en mi navegador para probarla.&#10;&#10;Abrí index.html en el navegador y la sección de contacto sale sin estilo. Esperaba que tuviera fondo gris. No aparece ningún error. Revisa por qué.">COPIAR PROMPTS</button></div>
+          <div class="code-content">Después de crear la página, explícame en lenguaje sencillo qué hace cada parte y dime exactamente cómo abrirla en mi navegador para probarla.
+
+Abrí index.html en el navegador y la sección de contacto sale sin estilo. Esperaba que tuviera fondo gris. No aparece ningún error. Revisa por qué.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplean:</strong> Capítulos 12.5 y 12.6. Cómo exigir que te explique cómo verificar el resultado y cómo describir un fallo indicando qué hiciste, qué esperabas y qué ocurrió.</p>
+
+        <!-- Prompt 22 -->
+        <div class="code-box">
+          <div class="code-header"><span>17. Autolistar herramientas disponibles (Cap. 13.13 — Ejercicio de herramientas)</span><button class="btn-copy" data-copy="Hazme una tabla con las herramientas que tienes disponibles y una frase de lo que hace cada una">COPIAR PROMPT</button></div>
+          <div class="code-content">Hazme una tabla con las herramientas que tienes disponibles y una frase de lo que hace cada una</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 13.13. Sirve para auditar qué herramientas exactas tiene activas tu versión instalada de Vibe.</p>
+
+        <!-- Prompt 23 -->
+        <div class="code-box">
+          <div class="code-header"><span>18. Delegación en subagente explore (Cap. 14.4 y Cap. 14.7 — Agentes)</span><button class="btn-copy" data-copy="Propón un plan para convertir notas.txt en una lista de tareas ordenada por prioridad, sin cambiar nada">COPIAR PROMPT</button></div>
+          <div class="code-content">Propón un plan para convertir notas.txt en una lista de tareas ordenada por prioridad, sin cambiar nada</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 14.7. Ejercicio para probar el agente <code>plan</code> antes de cambiar a <code>accept-edits</code> con <code>Shift+Tab</code>.</p>
+
+        <!-- Prompt 24 -->
+        <div class="code-box">
+          <div class="code-header"><span>19. Prompts de automatización en modo programático (Cap. 17.1 y 17.3)</span><button class="btn-copy" data-copy="Resume en cinco líneas el archivo notas.txt&#10;&#10;Lee todos los archivos .txt de esta carpeta y crea un archivo resumen.md con una línea por archivo.">COPIAR PROMPTS</button></div>
+          <div class="code-content">Resume en cinco líneas el archivo notas.txt
+
+Lee todos los archivos .txt de esta carpeta y crea un archivo resumen.md con una línea por archivo.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplean:</strong> Capítulos 17.1, 17.3 y Proyecto 8 del Laboratorio. Se pasan como argumento a <code>vibe --prompt "..."</code> desde PowerShell.</p>
+
+        <!-- Prompt 25: Proyecto A Cap 18.1 -->
+        <div class="code-box">
+          <div class="code-header"><span>20. Proyecto A: Web de panadería familiar — Plan y Construcción (Cap. 18.1 y Lab 4)</span><button class="btn-copy" data-copy="Objetivo: una página web de presentación para una panadería familiar.&#10;Contexto: la verá mucha gente desde el móvil. Usa solo HTML y CSS, sin librerías externas.&#10;Resultado: dime qué archivos crearías y cómo organizarías el contenido. No crees nada todavía.&#10;&#10;Crea ese plan. El archivo principal se llamará index.html y el estilo irá en estilos.css. Al terminar, dime cómo abrirla.">COPIAR PROMPTS</button></div>
+          <div class="code-content">Objetivo: una página web de presentación para una panadería familiar.
+Contexto: la verá mucha gente desde el móvil. Usa solo HTML y CSS, sin librerías externas.
+Resultado: dime qué archivos crearías y cómo organizarías el contenido. No crees nada todavía.
+
+Crea ese plan. El archivo principal se llamará index.html y el estilo irá en estilos.css. Al terminar, dime cómo abrirla.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplean:</strong> Capítulo 18.1 y Proyecto 4 del Laboratorio Práctico.</p>
+
+        <!-- Prompt 26: Proyecto B Cap 18.2 -->
+        <div class="code-box">
+          <div class="code-header"><span>21. Proyecto B: Calculadora de propinas en un archivo (Cap. 18.2)</span><button class="btn-copy" data-copy="Crea un único archivo propinas.html, sin dependencias externas. Debe tener: un campo para el importe de la cuenta, un selector del porcentaje de propina (5, 10, 15 %), un campo para el número de personas y un botón que muestre la propina y lo que paga cada persona. Si el importe no es un número, muestra un aviso claro en rojo. Explícame al final cómo probarla con tres ejemplos y los resultados que debería dar.">COPIAR PROMPT</button></div>
+          <div class="code-content">Crea un único archivo propinas.html, sin dependencias externas. Debe tener: un campo para el importe de la cuenta, un selector del porcentaje de propina (5, 10, 15 %), un campo para el número de personas y un botón que muestre la propina y lo que paga cada persona. Si el importe no es un número, muestra un aviso claro en rojo. Explícame al final cómo probarla con tres ejemplos y los resultados que debería dar.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 18.2. Desarrollo de aplicación HTML autónoma con validación y casos de prueba.</p>
+
+        <!-- Prompt 27: Proyecto C Cap 18.3 -->
+        <div class="code-box">
+          <div class="code-header"><span>22. Proyecto C: Lista de tareas persistente con JS (Cap. 18.3)</span><button class="btn-copy" data-copy="Crea una lista de tareas en lista.html con HTML, CSS y JavaScript en el mismo archivo. Debe permitir añadir una tarea, marcarla como hecha, borrarla y que las tareas se mantengan al recargar la página usando el almacenamiento del navegador. Revisa tu código y dime qué casos límite has considerado.">COPIAR PROMPT</button></div>
+          <div class="code-content">Crea una lista de tareas en lista.html con HTML, CSS y JavaScript en el mismo archivo. Debe permitir añadir una tarea, marcarla como hecha, borrarla y que las tareas se mantengan al recargar la página usando el almacenamiento del navegador. Revisa tu código y dime qué casos límite has considerado.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 18.3. Aplicación interactiva con uso de almacenamiento local del navegador.</p>
+
+        <!-- Prompt 28: Proyecto D Cap 18.4 -->
+        <div class="code-box">
+          <div class="code-header"><span>23. Proyecto D: Script Python organizador con modo --simulacro (Cap. 18.4)</span><button class="btn-copy" data-copy="Crea un script de Python llamado organizar.py que reciba una carpeta como argumento y mueva sus archivos a subcarpetas según la extensión (imagenes, documentos, otros). Debe tener una opción --simulacro que solo muestre lo que haría sin mover nada. No debe borrar archivos ni tocar subcarpetas existentes. Añade comentarios sencillos.">COPIAR PROMPT</button></div>
+          <div class="code-content">Crea un script de Python llamado organizar.py que reciba una carpeta como argumento y mueva sus archivos a subcarpetas según la extensión (imagenes, documentos, otros). Debe tener una opción --simulacro que solo muestre lo que haría sin mover nada. No debe borrar archivos ni tocar subcarpetas existentes. Añade comentarios sencillos.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 18.4. Creación de herramientas de automatización seguras con modo de simulación previo.</p>
+
+        <!-- Prompt 29: Proyecto E Cap 18.5 -->
+        <div class="code-box">
+          <div class="code-header"><span>24. Proyecto E: Generador de contraseñas criptográficas (Cap. 18.5)</span><button class="btn-copy" data-copy="Crea generador.html, en un único archivo, que genere contraseñas aleatorias de entre 8 y 32 caracteres con opciones de mayúsculas, números y símbolos, y un botón de copiar. No debe enviar nada a internet. Explica qué método usas para que la aleatoriedad sea segura.">COPIAR PROMPT</button></div>
+          <div class="code-content">Crea generador.html, en un único archivo, que genere contraseñas aleatorias de entre 8 y 32 caracteres con opciones de mayúsculas, números y símbolos, y un botón de copiar. No debe enviar nada a internet. Explica qué método usas para que la aleatoriedad sea segura.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplea:</strong> Capítulo 18.5. Enseña a auditar la calidad técnica del código generado (exigir API criptográfica del navegador en lugar de <code>Math.random()</code>).</p>
+
+        <!-- Prompt 30: Cap 19.4 y 19.8 -->
+        <div class="code-box">
+          <div class="code-header"><span>25. Análisis de proyecto existente y generación de README.md (Cap. 19.4 y 19.8)</span><button class="btn-copy" data-copy="Explícame qué hace este proyecto. Dame: 1) su propósito, 2) los archivos principales y para qué sirve cada uno, 3) cómo se ejecuta, 4) los riesgos o puntos confusos que ves. No modifiques nada.&#10;&#10;Crea un README.md para este proyecto con: qué hace, cómo se instala, cómo se usa con dos ejemplos y cómo contribuir. Escribe en español sencillo.">COPIAR PROMPTS</button></div>
+          <div class="code-content">Explícame qué hace este proyecto. Dame: 1) su propósito, 2) los archivos principales y para qué sirve cada uno, 3) cómo se ejecuta, 4) los riesgos o puntos confusos que ves. No modifiques nada.
+
+Crea un README.md para este proyecto con: qué hace, cómo se instala, cómo se usa con dos ejemplos y cómo contribuir. Escribe en español sencillo.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplean:</strong> Capítulos 19.4 y 19.8. Gestión profesional de proyectos heredados y documentación.</p>
+
+        <!-- Prompt 31: Cap 21.13 y Cap 22.1 -->
+        <div class="code-box">
+          <div class="code-header"><span>26. Prueba de seguridad fuera de carpeta y Auditoría final (Cap. 21.13 y 22.1)</span><button class="btn-copy" data-copy="lee el archivo C:\Windows\win.ini&#10;&#10;Busca errores, casos límite y riesgos de seguridad en lo que has hecho">COPIAR PROMPTS</button></div>
+          <div class="code-content">lee el archivo C:\Windows\win.ini
+
+Busca errores, casos límite y riesgos de seguridad en lo que has hecho</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplean:</strong> Capítulo 21.13 (para comprobar que Vibe pide permiso al salir del directorio de trabajo y denegarlo con <code>4</code>) y Capítulo 22.1 (revisión crítica al finalizar un desarrollo).</p>
+
+        <!-- Prompts Laboratorio Parte V -->
+        <div class="code-box">
+          <div class="code-header"><span>27. Prompts específicos de los 10 Proyectos del Laboratorio (Parte V)</span><button class="btn-copy" data-copy="Explica qué hay en esta carpeta, para qué sirve cada archivo y qué problemas ves. No modifiques nada.&#10;&#10;Crea compra.txt con diez productos de una despensa básica, uno por línea.&#10;&#10;Añade al final tres productos de limpieza y ordena todo alfabéticamente.&#10;&#10;Crea conversor.html en un solo archivo que convierta kilómetros a millas, kilos a libras y grados Celsius a Fahrenheit. Valida que lo escrito sea un número y muestra errores claros.&#10;&#10;Crea gastos.html en un solo archivo. Debe permitir añadir gastos con concepto, importe y fecha, mostrar la suma total, borrar gastos y conservarlos al recargar. Explica qué casos límite has tenido en cuenta.&#10;&#10;Revisa gastos.html y dime los fallos de seguridad o de calidad que veas. No modifiques nada.&#10;&#10;La conversión de Celsius a Fahrenheit da 211 en lugar de 212 para 100 grados. Explícame la causa sin corregir todavía.">COPIAR PROMPTS</button></div>
+          <div class="code-content">Explica qué hay en esta carpeta, para qué sirve cada archivo y qué problemas ves. No modifiques nada.
+
+Crea compra.txt con diez productos de una despensa básica, uno por línea.
+
+Añade al final tres productos de limpieza y ordena todo alfabéticamente.
+
+Crea conversor.html en un solo archivo que convierta kilómetros a millas, kilos a libras y grados Celsius a Fahrenheit. Valida que lo escrito sea un número y muestra errores claros.
+
+Crea gastos.html en un solo archivo. Debe permitir añadir gastos con concepto, importe y fecha, mostrar la suma total, borrar gastos y conservarlos al recargar. Explica qué casos límite has tenido en cuenta.
+
+Revisa gastos.html y dime los fallos de seguridad o de calidad que veas. No modifiques nada.
+
+La conversión de Celsius a Fahrenheit da 211 en lugar de 212 para 100 grados. Explícame la causa sin corregir todavía.</div>
+        </div>
+        <p class="muted"><strong>Dónde se emplean:</strong> Parte V (Laboratorio Práctico, Proyectos 1, 2, 5, 6, 7 y 9).</p>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PESTAÑA 7: 33 Preguntas (Q&A) (Antes que ERRORES)
+         ========================================== -->
+    <section class="tab-section" data-t="33 Preguntas (Q&A)">
+      <div class="card">
+        <h2>PARTE VII. 33 PREGUNTAS Y RESPUESTAS ORDENADAS POR NIVEL DE DIFICULTAD</h2>
+        <p>Pulsa sobre cada pregunta para desplegar su respuesta o utiliza los botones para abrirlas todas:</p>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
+          <button type="button" class="btn-util" onclick="toggleAllQA(true)">▼ Desplegar las 33 respuestas</button>
+          <button type="button" class="btn-util" onclick="toggleAllQA(false)">▲ Plegar todas</button>
+        </div>
+
+        <!-- NIVEL 1 -->
+        <h3><span class="badge badge-nivel1">NIVEL 1</span> PRINCIPIANTE (Preguntas 1 a 11)</h3>
+
+        <details class="collapsible qa-item" open>
+          <summary>Pregunta 1. ¿Qué es MISTRAL VIBE?</summary>
+          <div class="collapsible-body"><p>Es un asistente de programación de código abierto de Mistral AI que se maneja desde la línea de comandos. Le escribes peticiones en español, él las envía a un modelo de lenguaje y, con tu permiso, lee, crea y modifica archivos y ejecuta comandos en la carpeta donde lo arrancaste. Se inicia escribiendo <code>vibe</code> en PowerShell.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 2. ¿Necesito saber programar para usarlo?</summary>
+          <div class="collapsible-body"><p>No para empezar. Puedes pedir cosas en lenguaje natural. Sí necesitas criterio para revisar lo que hace: abrir lo que crea, probarlo y entender qué te pide aprobar. Quien no revisa corre el riesgo de aceptar cambios erróneos o dañinos.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 3. ¿Cuál es la diferencia entre PowerShell y CMD?</summary>
+          <div class="collapsible-body"><p>Ambos son intérpretes de comandos de Windows. PowerShell es más moderno y tiene órdenes como <code>Get-ChildItem</code>. CMD es el antiguo Símbolo del sistema. Este tutorial usa PowerShell. Se distinguen porque el indicador de PowerShell empieza por <code>PS</code>.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 4. ¿Tengo que instalar Python?</summary>
+          <div class="collapsible-body"><p>No necesariamente. La documentación de Mistral dice que Python 3.12 o superior hace falta para una instalación manual (con pip) y que uv lo descarga si es necesario. Con el método recomendado (uv) puedes no instalarlo tú. Aun así, saber instalarlo y comprobarlo ayuda a resolver problemas.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 5. ¿Qué es uv y por qué se usa?</summary>
+          <div class="collapsible-body"><p>Es un gestor de herramientas de Python hecho por Astral. Instala Vibe en un entorno propio, aislado de otros programas, y coloca el comando <code>vibe</code> en tu PATH. También permite actualizarlo (<code>uv tool upgrade mistral-vibe</code>) y desinstalarlo.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 6. ¿Qué comandos instalan Vibe en Windows 11?</summary>
+          <div class="collapsible-body"><p>Dos, en PowerShell y por separado. Primero uv: <code>powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</code>. Luego, en una ventana nueva, <code>uv tool install mistral-vibe</code>. Comprueba con <code>vibe --version</code>. El README advierte que Windows funciona pero el soporte oficial se orienta a sistemas UNIX.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 7. Escribo vibe y Windows dice que no lo reconoce. ¿Qué hago?</summary>
+          <div class="collapsible-body"><p>Lo más probable es que la ventana sea anterior a la instalación y no conozca el PATH nuevo. Cierra PowerShell y abre otra. Si sigue fallando, ejecuta <code>uv tool update-shell</code>, abre una ventana nueva y repite <code>vibe --version</code>. Comprueba también que <code>uv tool list</code> muestra <code>mistral-vibe</code>.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 8. ¿Necesito una clave de API?</summary>
+          <div class="collapsible-body"><p>No siempre. Al primer arranque puedes iniciar sesión con tu cuenta de Mistral en el navegador y Vibe gestiona las credenciales. La clave de API es otra vía, útil para otros proveedores, automatización o resolver problemas. Si usas clave, no la compartas nunca en chats, capturas ni repositorios. <code>vibe --setup</code> repite el asistente.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 9. ¿En qué carpeta debo arrancar Vibe?</summary>
+          <div class="collapsible-body"><p>En una carpeta específica del proyecto, como <code>Documents\vibe-lab</code>. Nunca en tu carpeta de usuario completa. Vibe trabaja sobre la carpeta actual y puede leer y modificar sus archivos, así que conviene limitar el alcance.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 10. ¿Cómo salgo de Vibe?</summary>
+          <div class="collapsible-body"><p>Escribe <code>/exit</code>, o <code>exit</code>, <code>quit</code>, <code>:q</code>. También puedes pulsar <code>Ctrl+C</code> o <code>Ctrl+D</code> dos veces seguidas en aproximadamente un segundo. <code>Escape</code> no sale: interrumpe la respuesta en curso.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 11. ¿Es gratis?</summary>
+          <div class="collapsible-body"><p>Vibe en sí es gratuito y de código abierto (Apache-2.0), pero usa modelos alojados que consumen cuota. La documentación de Mistral indica que los planes Free y Pro de Mistral incluyen Vibe Code con límites de uso, y que puede activarse el pago por uso, desactivado por defecto. Los planes cambian: consulta la web de Mistral.</p></div>
+        </details>
+
+        <!-- NIVEL 2 -->
+        <h3><span class="badge badge-nivel2">NIVEL 2</span> INTERMEDIO (Preguntas 12 a 22)</h3>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 12. ¿Qué diferencia hay entre los agentes ask, plan, accept-edits y auto-approve?</summary>
+          <div class="collapsible-body"><p>Cambian lo que se aprueba solo. <code>ask</code> pide permiso para todo. <code>plan</code> es de solo lectura. <code>accept-edits</code> aprueba las ediciones de archivos y sigue preguntando por los comandos de shell. <code>auto-approve</code> lo aprueba todo, incluidos los comandos, y solo es razonable en entornos desechables. Cambias con <code>Shift+Tab</code> o <code>vibe --agent NOMBRE</code>.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 13. ¿Cuál es el agente por defecto y cómo lo cambio?</summary>
+          <div class="collapsible-body"><p>Según el README y la documentación de Mistral, <code>accept-edits</code>. Se cambia con <code>default_agent = "ask"</code> en <code>config.toml</code>, o con <code>/config</code>. La opción <code>--agent</code> en la línea de comandos manda sobre la configuración para esa ejecución.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 14. ¿Cómo hago que Vibe lea un archivo concreto?</summary>
+          <div class="collapsible-body"><p>Escribe <code>@</code> seguido del nombre y elige el archivo del autocompletado: «Resume @notas.txt». Esa mención se convierte en una lectura con <code>read_file</code>. Con imágenes (<code>.png</code>, <code>.jpg</code>, <code>.jpeg</code>, <code>.gif</code>, <code>.webp</code>) y un modelo con visión, se envían como contenido multimodal.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 15. ¿Qué diferencia hay entre write_file y edit?</summary>
+          <div class="collapsible-body"><p><code>write_file</code> crea archivos nuevos y se niega a sobrescribir los existentes. <code>edit</code> modifica una parte de un archivo existente y muestra un diff. Si pides que «rehaga» un archivo existente, Vibe usará <code>edit</code>.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 16. ¿Cómo escribo una buena petición?</summary>
+          <div class="collapsible-body"><p>Con cinco elementos: objetivo, contexto, límites, resultado esperado y comprobación. «Haz una web» es vaga; «crea un único <code>index.html</code> para una panadería con tres secciones y sin librerías externas, y dime cómo abrirlo» es concreta. Pide planes primero y divide tareas grandes.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 17. ¿Qué hace el ! delante de un texto?</summary>
+          <div class="collapsible-body"><p>Ejecuta ese comando directamente en tu shell, sin pasar por el modelo: <code>!dir</code>. Qué shell se usa exactamente en Windows depende de la configuración y de las herramientas disponibles, así que si un comando falla, prueba su equivalente.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 18. ¿Qué hace /compact?</summary>
+          <div class="collapsible-body"><p>Resume el contexto de la conversación para liberar espacio, conservando la sesión y lo visible. Acepta instrucciones adicionales después del comando. Es útil cuando la conversación es larga y notas que Vibe olvida detalles.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 19. ¿Cómo retomo una conversación anterior?</summary>
+          <div class="collapsible-body"><p>Con <code>vibe --continue</code> retomas la última de la carpeta actual. Con <code>vibe --resume</code> abres un selector, o <code>/resume</code> dentro de Vibe. La sesión conserva el modelo con el que empezó. El registro de sesiones debe estar activado.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 20. ¿Dónde está config.toml y cuál manda?</summary>
+          <div class="collapsible-body"><p>En <code>$HOME\.vibe\config.toml</code> (usuario) y en <code>.vibe\config.toml</code> (proyecto, solo si confías en la carpeta). El del proyecto prevalece sobre el de usuario. El archivo no existe hasta que guardas un ajuste. Si falla tras editarlo, renómbralo y arranca de nuevo.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 21. ¿Cómo cambio de modelo?</summary>
+          <div class="collapsible-body"><p>Con <code>/model</code> dentro de Vibe, o con <code>active_model</code> en <code>config.toml</code>. <code>/model</code> solo lista los modelos que tienes configurados. El modelo integrado es Mistral Medium 3.5; los demás se añaden con bloques <code>[[models]]</code>.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 22. ¿Qué es la confianza de carpeta y qué es AGENTS.md?</summary>
+          <div class="collapsible-body"><p>Un proyecto puede traer <code>.vibe/</code>, <code>AGENTS.md</code> o <code>.agents/skills/</code> que alteran el comportamiento de Vibe. Vibe solo los carga si confías en la carpeta. <code>AGENTS.md</code> contiene tus instrucciones permanentes. Revisa estos archivos antes de confiar en un proyecto ajeno.</p></div>
+        </details>
+
+        <!-- NIVEL 3 -->
+        <h3><span class="badge badge-nivel3">NIVEL 3</span> AVANZADO (Preguntas 23 a 33)</h3>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 23. ¿Cómo funcionan las aprobaciones en modo programático?</summary>
+          <div class="collapsible-body"><p>En <code>vibe --prompt</code>, nadie puede responder a un permiso, así que Vibe rechaza cada llamada que lo necesitaría, salvo que pases <code>--auto-approve</code> o <code>--yolo</code>. Con el agente por defecto, las ediciones pasan y los comandos de shell no. Diseña automatizaciones que solo lean y escriban, o ejecútalas en un entorno aislado.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 24. ¿Cómo limito el coste de una ejecución automática?</summary>
+          <div class="collapsible-body"><p>Con <code>--max-price</code> (dólares), <code>--max-turns</code> y <code>--max-tokens</code>. Si se supera el límite, la sesión se interrumpe y el resultado puede quedar incompleto. En una sesión interactiva, <code>/status</code> muestra el uso.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 25. ¿Cómo añado un servidor MCP y qué riesgo tiene?</summary>
+          <div class="collapsible-body"><p>Con <code>vibe mcp add NOMBRE --url ...</code> o con bloques <code>[[mcp_servers]]</code> en <code>config.toml</code>. Si no das clave, usa OAuth y abre el navegador. Cada herramienta aparece como <code>{servidor}_{herramienta}</code>. Riesgo: actúa sobre servicios externos. Mantén <code>permission = "ask"</code> y usa solo servidores de confianza.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 26. ¿Qué es una Skill y cómo se crea?</summary>
+          <div class="collapsible-body"><p>Una carpeta con un <code>SKILL.md</code> que tiene un encabezado (nombre, descripción, <code>user-invocable</code>, <code>allowed-tools</code>) y el cuerpo con las instrucciones. La colocas en <code>~/.vibe/skills/</code> o en <code>.vibe/skills/</code> de un proyecto de confianza. Con <code>user-invocable: true</code> aparece como comando de barra.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 27. ¿Cuándo conviene delegar en subagentes?</summary>
+          <div class="collapsible-body"><p>Cuando la tarea es de exploración o lectura que ensucia el contexto del agente principal, como analizar una carpeta grande. La herramienta <code>task</code> los invoca; <code>explore</code> es el incorporado, de solo lectura. Heredan los permisos de la sesión y los hooks, así que ten cuidado con lo que autorizas.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 28. ¿Qué son los hooks y cuándo usarlos?</summary>
+          <div class="collapsible-body"><p>Comandos que Vibe ejecuta en puntos del ciclo: <code>post_agent</code>, <code>pre_tool</code> y <code>post_tool</code>. Un <code>pre_tool</code> puede denegar una llamada o reescribir sus argumentos. Sirven para políticas de seguridad o auditoría. En Windows, el comando se ejecuta sin shell, así que debe ser un ejecutable. Es un tema avanzado.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 29. ¿Qué diferencia real hay entre smart-approve y auto-approve?</summary>
+          <div class="collapsible-body"><p><code>smart-approve</code> clasifica cada llamada con un modelo: ejecuta las seguras y te consulta en las arriesgadas. Aun así, la documentación avisa de que no es una sandbox. <code>auto-approve</code> no consulta nada. Ambos pueden ejecutar acciones con los permisos de tu usuario. Para código no fiable, usa <code>ask</code> o un entorno aislado.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 30. ¿Qué es la inyección de instrucciones y cómo me afecta?</summary>
+          <div class="collapsible-body"><p>Un archivo, una web o una respuesta de un servidor MCP puede contener texto que intenta ordenar al modelo cosas que tú no pediste, como filtrar un archivo. Se reduce con agentes que pidan aprobación, permisos mínimos, <code>outside_workdir = "deny"</code>, y no usando <code>auto-approve</code> con contenido ajeno.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 31. ¿Cómo personalizo Vibe a fondo?</summary>
+          <div class="collapsible-body"><p>Con <code>config.toml</code> (agente por defecto, modelos, permisos por herramienta, filtros), agentes en <code>~/.vibe/agents/</code>, prompts de sistema y de compactación en <code>~/.vibe/prompts/</code>, Skills, <code>AGENTS.md</code>, hooks y la variable <code>VIBE_HOME</code>, que cambia la carpeta raíz. <code>vibe config schema</code> ayuda a validar la configuración.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 32. ¿Qué shell usa Vibe en Windows y es necesario WSL2?</summary>
+          <div class="collapsible-body"><p>No hay una respuesta única: según el README, una prueba A/B decide entre la herramienta <code>bash</code> clásica y variantes gestionadas (<code>git_bash</code> si hay Git Bash; si no, <code>powershell</code>). No es necesario WSL2 para empezar, aunque bajo WSL Vibe se ejecuta como Linux, el entorno que Mistral soporta oficialmente. Instalar Git para Windows amplía opciones.</p></div>
+        </details>
+
+        <details class="collapsible qa-item">
+          <summary>Pregunta 33. ¿Cómo sería un flujo de trabajo profesional?</summary>
+          <div class="collapsible-body"><p>Commit previo; plan con <code>plan</code>; revisión del plan; ejecución en pasos con <code>accept-edits</code>; prueba tuya de cada paso; commit; revisión crítica final con un agente de solo lectura. Con <code>AGENTS.md</code> para reglas, Skills para tareas repetidas, límites en modo programático y copias de seguridad.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PESTAÑA 8: ERRORES (Y APÉNDICE WINDOWS)
+         ========================================== -->
+    <section class="tab-section" data-t="ERRORES">
+      <div class="card">
+        <h2>DIAGNÓSTICO DE ERRORES Y APÉNDICE DE WINDOWS 11</h2>
+        <h3>Tabla general de resolución de problemas</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Síntoma o Error</th><th>Causa probable</th><th>Solución paso a paso</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>vibe</code> o <code>uv</code> no se reconoce como comando</td><td>Ventana de PowerShell abierta antes de instalar o PATH sin actualizar</td><td>Cierra y abre PowerShell. Si persiste, ejecuta <code>uv tool update-shell</code>, abre ventana nueva y comprueba <code>uv tool list</code>.</td></tr>
+              <tr><td>Se abre la Microsoft Store al escribir <code>python</code></td><td>No hay Python instalado; actúa el alias de Windows</td><td>Instala Python 3.12+ con el Python Install Manager o deja que <code>uv</code> lo gestione.</td></tr>
+              <tr><td>El antivirus bloquea o elimina <code>uv.exe</code></td><td>Falso positivo en <code>%USERPROFILE%\.local\bin\uv.exe</code></td><td>Crea una excepción en el antivirus (fuente secundaria) o instala mediante WinGet.</td></tr>
+              <tr><td>Error de clave de API no válida tras cambiarla</td><td>Una variable de entorno <code>MISTRAL_API_KEY</code> en el shell pisa la nueva</td><td>Comprueba con <code>Get-ChildItem Env:MISTRAL_API_KEY</code>. El orden de búsqueda es: 1º Shell, 2º <code>.env</code>, 3º Administrador de credenciales.</td></tr>
+              <tr><td>El navegador no se abre al iniciar sesión</td><td>Entorno sin navegador predeterminado asociado</td><td>Desde CHANGELOG 2.14.0 Vibe muestra una URL copiable de respaldo en pantalla. Cópiala y ábrela manualmente.</td></tr>
+              <tr><td><code>write_file</code> se niega a crear un archivo</td><td>El archivo ya existe (no sobrescribe desde v2.14.0)</td><td>Pide que lo modifique con <code>edit</code> o indica un nombre nuevo.</td></tr>
+              <tr><td>Rutas extrañas del tipo <code>C:\c\...</code></td><td>Fallo antiguo de rutas de Git Bash en Windows</td><td>Corregido en la versión 2.24.1. Actualiza con <code>uv tool upgrade mistral-vibe</code>.</td></tr>
+              <tr><td>Errores de certificados SSL o proxy corporativo</td><td>Red de empresa interceptando tráfico</td><td>Añade <code>enable_system_trust_store = true</code> en <code>config.toml</code> y ejecuta <code>/proxy-setup</code> dentro de Vibe.</td></tr>
+              <tr><td>Vibe no arranca tras editar <code>config.toml</code></td><td>Error de sintaxis TOML o barra invertida sin escapar</td><td>Renombra el archivo: <code>Rename-Item "$HOME\.vibe\config.toml" "config.toml.bkp"</code> y vuelve a arrancar.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Apéndice. Actualizar, reinstalar y desinstalar por completo</h3>
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Actualizar o Reinstalar Vibe</span><button class="btn-copy" data-copy="uv tool upgrade mistral-vibe&#10;uv tool upgrade mistral-vibe --reinstall">COPIAR</button></div>
+          <div class="code-content">uv tool upgrade mistral-vibe
+uv tool upgrade mistral-vibe --reinstall</div>
+        </div>
+
+        <div class="code-box">
+          <div class="code-header"><span>En PowerShell — Desinstalar programa y borrar datos (.vibe)</span><button class="btn-copy" data-copy="uv tool uninstall mistral-vibe&#10;Remove-Item -Recurse &quot;$HOME\.vibe&quot;">COPIAR</button></div>
+          <div class="code-content">uv tool uninstall mistral-vibe
+Remove-Item -Recurse "$HOME\.vibe"</div>
+        </div>
+        <p class="muted">Recuerda revisar también el «Administrador de credenciales» de Windows y revocar en la web de Mistral cualquier clave de API que ya no utilices.</p>
+
+        <h3>A.5. Qué no se ha podido verificar directamente (Transparencia técnica)</h3>
+        <ul>
+          <li>El contenido exacto de la pestaña de Windows de la página de instalación de Mistral (se siguió el README oficial del repositorio).</li>
+          <li>La lista completa de comandos con barra de tu versión futura: usa siempre <code>/help</code> como autoridad.</li>
+          <li>Qué variante de la herramienta de shell te corresponderá en Windows (asignada por experimento A/B del servidor entre <code>bash</code>, <code>git_bash</code> y <code>powershell</code>).</li>
+          <li>El funcionamiento de <code>smart-approve</code> en tu cuenta (despliegue progresivo), de plugins y de <code>/teleport</code>.</li>
+          <li>Si Vibe funciona con compilaciones de Python sin GIL o la compatibilidad exacta con Windows ARM64.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PESTAÑA 9: RESUMEN Y GLOSARIO (PARTE VI)
+         ========================================== -->
+    <section class="tab-section" data-t="RESUMEN Y GLOSARIO">
+      <div class="card">
+        <h2>RESUMEN EJECUTIVO POR PARTES</h2>
+        <ul>
+          <li><strong>Parte I (Comprender):</strong> Vibe es un agente CLI Apache-2.0 que lee, crea y edita archivos y ejecuta comandos en tu directorio de trabajo enviando contexto a modelos de Mistral.</li>
+          <li><strong>Parte II (Instalación en Windows 11):</strong> Se instala instalando primero <code>uv</code> en PowerShell y luego ejecutando <code>uv tool install mistral-vibe</code>. Se configura con <code>vibe --setup</code>.</li>
+          <li><strong>Parte III (Uso práctico):</strong> Usa <code>@archivo</code> para leer, pide planes con <code>plan</code>, ejecuta cambios con <code>accept-edits</code>, estructura tus peticiones en 5 partes y personaliza <code>config.toml</code> y <code>AGENTS.md</code>.</li>
+          <li><strong>Parte IV (Nivel profesional):</strong> Automatiza con <code>vibe --prompt</code> fijando <code>--max-turns</code> y <code>--max-price</code>, protege tu código con commits de Git, amplía con MCP y Skills y nunca uses <code>auto-approve</code> en tu equipo personal.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>PARTE VI. DICCIONARIO TÉCNICO COMPLETO (A–Z)</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Término</th><th>Definición clara y aplicada a MISTRAL VIBE</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>ACP (Agent Client Protocol)</strong></td><td>Protocolo que permite usar un agente como Vibe desde un editor (comando <code>vibe-acp</code>, por ejemplo en Zed o JetBrains).</td></tr>
+              <tr><td><strong>Agente</strong></td><td>En Vibe, perfil de configuración que decide qué se aprueba solo y qué herramientas hay (<code>plan</code>, <code>ask</code>, <code>accept-edits</code>).</td></tr>
+              <tr><td><strong>AGENTS.md</strong></td><td>Archivo de instrucciones permanentes para el agente, en <code>~/.vibe/</code> o en una carpeta de proyecto de confianza.</td></tr>
+              <tr><td><strong>API y API Key</strong></td><td>Canal por el que Vibe habla con Mistral y contraseña larga que identifica tu cuenta. Se protege como clave bancaria.</td></tr>
+              <tr><td><strong>Aprobación</strong></td><td>Permiso que das en el panel inferior (1: esta vez, 2: sesión, 3: siempre, 4: denegar) para que una herramienta actúe.</td></tr>
+              <tr><td><strong>Argumento</strong></td><td>Dato que acompaña a un comando. En <code>vibe --agent plan</code>, <code>plan</code> es el valor de la opción <code>--agent</code>.</td></tr>
+              <tr><td><strong>Bash</strong></td><td>Intérprete de comandos habitual en Linux/macOS y nombre de herramienta en Vibe (con variantes <code>git_bash</code> y <code>powershell</code> en Windows).</td></tr>
+              <tr><td><strong>CHANGELOG</strong></td><td>Archivo del repositorio que lista los cambios de cada versión.</td></tr>
+              <tr><td><strong>CLI</strong></td><td>Command Line Interface: interfaz de línea de comandos que se maneja escribiendo.</td></tr>
+              <tr><td><strong>Commit</strong></td><td>Una versión guardada del historial de Git.</td></tr>
+              <tr><td><strong>Compactar (<code>/compact</code>)</strong></td><td>Resumir la conversación para liberar espacio de contexto sin perder la sesión.</td></tr>
+              <tr><td><strong>config.toml</strong></td><td>Archivo de configuración de Vibe en formato TOML (en <code>.vibe\config.toml</code> del proyecto y <code>~/.vibe/config.toml</code> del usuario).</td></tr>
+              <tr><td><strong>Consola / Terminal</strong></td><td>Ventana donde escribes comandos de texto.</td></tr>
+              <tr><td><strong>Contexto</strong></td><td>Todo lo que el modelo tiene delante al responder: conversación, archivos leídos e instrucciones del sistema. Es limitado.</td></tr>
+              <tr><td><strong>Credencial</strong></td><td>Dato que demuestra tu identidad: clave de API, sesión iniciada o contraseña.</td></tr>
+              <tr><td><strong>Diff</strong></td><td>Comparación que muestra qué líneas cambiaron, antes y después.</td></tr>
+              <tr><td><strong>Directorio de trabajo</strong></td><td>La carpeta desde la que arrancas Vibe y sobre la que actúa.</td></tr>
+              <tr><td><strong>Entorno aislado</strong></td><td>Espacio separado donde <code>uv</code> guarda las dependencias de Vibe sin mezclarlas con otros programas.</td></tr>
+              <tr><td><strong>Escape (tecla)</strong></td><td>Interrumpe el turno activo (pulsada dos veces con la entrada vacía abre rebobinar).</td></tr>
+              <tr><td><strong>Git</strong></td><td>Programa que guarda el historial de cambios de un proyecto.</td></tr>
+              <tr><td><strong>Glob</strong></td><td>Patrón con comodines, como <code>bash*</code>, admitido al filtrar herramientas.</td></tr>
+              <tr><td><strong>Hook</strong></td><td>Comando que Vibe ejecuta en <code>pre_tool</code>, <code>post_tool</code> o <code>post_agent</code> para auditar o bloquear acciones.</td></tr>
+              <tr><td><strong>Inyección de instrucciones</strong></td><td>Texto malicioso incluido en un archivo o web que intenta dar órdenes ocultas al modelo.</td></tr>
+              <tr><td><strong>JSON</strong></td><td>Formato de datos en texto estructurado (disponible en modo programático con <code>--output json</code>).</td></tr>
+              <tr><td><strong>MCP</strong></td><td>Model Context Protocol: estándar para ofrecer herramientas externas a un agente.</td></tr>
+              <tr><td><strong>Modelo de lenguaje</strong></td><td>Sistema de IA que genera texto (ej. Mistral Medium 3.5).</td></tr>
+              <tr><td><strong>Modo programático</strong></td><td>Ejecución de una sola petición sin interfaz interactiva: <code>vibe --prompt "..."</code>.</td></tr>
+              <tr><td><strong>OAuth</strong></td><td>Método de inicio de sesión mediante el navegador sin dar tu contraseña al programa.</td></tr>
+              <tr><td><strong>OpenTelemetry</strong></td><td>Estándar para exportar trazas de funcionamiento (<code>enable_otel = true</code>).</td></tr>
+              <tr><td><strong>PATH</strong></td><td>Lista de carpetas donde Windows busca los programas cuando escribes su nombre.</td></tr>
+              <tr><td><strong>pip / PyPI</strong></td><td>Instalador clásico de paquetes de Python / Almacén público donde está alojado <code>mistral-vibe</code>.</td></tr>
+              <tr><td><strong>PowerShell</strong></td><td>Intérprete de comandos moderno de Windows.</td></tr>
+              <tr><td><strong>Prompt</strong></td><td>Texto de la petición que le das al modelo.</td></tr>
+              <tr><td><strong>Python</strong></td><td>Lenguaje de programación en el que está escrito Vibe (requiere 3.12+).</td></tr>
+              <tr><td><strong>Repositorio</strong></td><td>Proyecto con historial gestionado por Git.</td></tr>
+              <tr><td><strong>Sesión</strong></td><td>Conversación guardada con Vibe que puede reanudarse con <code>--continue</code> o <code>/resume</code>.</td></tr>
+              <tr><td><strong>Skill</strong></td><td>Carpeta con un archivo <code>SKILL.md</code> que aporta instrucciones reutilizables al agente.</td></tr>
+              <tr><td><strong>Subagente</strong></td><td>Agente que trabaja de forma independiente a petición del agente principal mediante <code>task</code> (ej. <code>explore</code>).</td></tr>
+              <tr><td><strong>Telemetría</strong></td><td>Datos anónimos de uso enviados al fabricante (se desactiva con <code>enable_telemetry = false</code>).</td></tr>
+              <tr><td><strong>Token</strong></td><td>Unidad de texto que procesan los modelos; mide límites de contexto y coste.</td></tr>
+              <tr><td><strong>TOML</strong></td><td>Formato de archivo de configuración legible usado por <code>config.toml</code>.</td></tr>
+              <tr><td><strong>uv</strong></td><td>Gestor de paquetes y herramientas de Python creado por Astral que instala Vibe.</td></tr>
+              <tr><td><strong>Variable de entorno</strong></td><td>Valor con nombre que los programas pueden leer, como <code>MISTRAL_API_KEY</code>.</td></tr>
+              <tr><td><strong>Worktree</strong></td><td>Copia de trabajo adicional de un repositorio de Git en otra carpeta y rama (<code>vibe --worktree</code>).</td></tr>
+              <tr><td><strong>WSL2</strong></td><td>Windows Subsystem for Linux: función que ejecuta Linux dentro de Windows.</td></tr>
+              <tr><td><strong>YOLO (<code>--yolo</code>)</strong></td><td>Alias de <code>--auto-approve</code>: aprueba todas las acciones sin preguntar.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PESTAÑA 10: FUENTES (PARTE VIII)
+         ========================================== -->
+    <section class="tab-section" data-t="FUENTES">
+      <div class="card">
+        <h2>PARTE VIII. FUENTES DOCUMENTALES VERIFICADAS</h2>
+        <p>Fecha de consulta de todas las fuentes: <strong>7 de noviembre de 2026</strong>. Todos los enlaces disponen de botón para abrir en ventana nueva y botón para copiar la URL íntegra:</p>
+
+        <h3>Fuentes primarias (Oficiales)</h3>
+
+        <div class="url-card">
+          <div><strong>1. README de Mistral Vibe (Mistral AI):</strong> Instalación, agentes, subagentes, herramientas, atajos, modo programático, voz, Skills, configuración, MCP, hooks, sesiones, actualizaciones, OpenTelemetry.</div>
+          <div class="url-text">https://github.com/mistralai/mistral-vibe</div>
+          <div class="url-actions">
+            <a href="https://github.com/mistralai/mistral-vibe" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://github.com/mistralai/mistral-vibe">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="url-card">
+          <div><strong>2. CHANGELOG de Mistral Vibe (Mistral AI):</strong> Historial de versiones hasta la 2.25.2 (10 de septiembre de 2026): cambios de nombres de herramientas, hooks, modelos, Windows.</div>
+          <div class="url-text">https://github.com/mistralai/mistral-vibe/blob/main/CHANGELOG.md</div>
+          <div class="url-actions">
+            <a href="https://github.com/mistralai/mistral-vibe/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://github.com/mistralai/mistral-vibe/blob/main/CHANGELOG.md">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="url-card">
+          <div><strong>3. ACP Setup (Mistral AI):</strong> Uso de <code>vibe-acp</code> en Zed, JetBrains, Xcode y Neovim.</div>
+          <div class="url-text">https://github.com/mistralai/mistral-vibe/blob/main/docs/acp-setup.md</div>
+          <div class="url-actions">
+            <a href="https://github.com/mistralai/mistral-vibe/blob/main/docs/acp-setup.md" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://github.com/mistralai/mistral-vibe/blob/main/docs/acp-setup.md">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="url-card">
+          <div><strong>4. Installer et configurer — CLI Vibe (Mistral AI):</strong> Instalación, primer arranque, comprobación, actualización, requisitos, reinicio de configuración (leída en francés).</div>
+          <div class="url-text">https://docs.mistral.ai/fr/vibe/code/cli/install-setup</div>
+          <div class="url-actions">
+            <a href="https://docs.mistral.ai/fr/vibe/code/cli/install-setup" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://docs.mistral.ai/fr/vibe/code/cli/install-setup">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="url-card">
+          <div><strong>5. Clés API et profils (Mistral AI):</strong> Dónde crear la clave, almacén de credenciales, orden de búsqueda, <code>/status</code>, <code>/whoami</code>, proveedores, planes y facturación (leída en francés).</div>
+          <div class="url-text">https://docs.mistral.ai/fr/vibe/code/cli/api-keys-profiles</div>
+          <div class="url-actions">
+            <a href="https://docs.mistral.ai/fr/vibe/code/cli/api-keys-profiles" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://docs.mistral.ai/fr/vibe/code/cli/api-keys-profiles">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="url-card">
+          <div><strong>6. Configuration — CLI Vibe Code (Mistral AI):</strong> Ubicación y prioridad de <code>config.toml</code>, modelos disponibles, filtros de herramientas, telemetría (leída en francés).</div>
+          <div class="url-text">https://docs.mistral.ai/fr/vibe/code/cli/configuration</div>
+          <div class="url-actions">
+            <a href="https://docs.mistral.ai/fr/vibe/code/cli/configuration" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://docs.mistral.ai/fr/vibe/code/cli/configuration">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="url-card">
+          <div><strong>7. Sécurité, approbations et autorisations (Mistral AI):</strong> Agentes de aprobación, <code>smart-approve</code>, carpetas de confianza, permisos por herramienta, buenas prácticas (leída en francés).</div>
+          <div class="url-text">https://docs.mistral.ai/fr/vibe/code/safety-approvals-permissions</div>
+          <div class="url-actions">
+            <a href="https://docs.mistral.ai/fr/vibe/code/safety-approvals-permissions" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://docs.mistral.ai/fr/vibe/code/safety-approvals-permissions">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="url-card">
+          <div><strong>8. Quickstart de la CLI Vibe (Mistral AI):</strong> Requisitos (Python 3.12 o superior), instalación, primer arranque (extracto de buscador).</div>
+          <div class="url-text">https://docs.mistral.ai/fr/getting-started/quickstarts/vibe-code/install-cli</div>
+          <div class="url-actions">
+            <a href="https://docs.mistral.ai/fr/getting-started/quickstarts/vibe-code/install-cli" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://docs.mistral.ai/fr/getting-started/quickstarts/vibe-code/install-cli">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="url-card">
+          <div><strong>9a. Documentación general de Vibe (Mistral AI):</strong> Presentación de Vibe y distinción de productos.</div>
+          <div class="url-text">https://docs.mistral.ai/vibe</div>
+          <div class="url-actions">
+            <a href="https://docs.mistral.ai/vibe" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://docs.mistral.ai/vibe">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="url-card">
+          <div><strong>9b. Introducción a Mistral Vibe (Mistral AI):</strong></div>
+          <div class="url-text">https://docs.mistral.ai/mistral-vibe/introduction</div>
+          <div class="url-actions">
+            <a href="https://docs.mistral.ai/mistral-vibe/introduction" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://docs.mistral.ai/mistral-vibe/introduction">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="url-card">
+          <div><strong>10. Installing uv (Astral):</strong> Instalador de PowerShell, WinGet, Scoop, actualización.</div>
+          <div class="url-text">https://docs.astral.sh/uv/getting-started/installation/</div>
+          <div class="url-actions">
+            <a href="https://docs.astral.sh/uv/getting-started/installation/" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://docs.astral.sh/uv/getting-started/installation/">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="url-card">
+          <div><strong>11. The uv installer (Astral):</strong> Opciones del instalador y <code>UV_NO_MODIFY_PATH</code>.</div>
+          <div class="url-text">https://docs.astral.sh/uv/reference/installer/</div>
+          <div class="url-actions">
+            <a href="https://docs.astral.sh/uv/reference/installer/" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://docs.astral.sh/uv/reference/installer/">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="url-card">
+          <div><strong>12a. Tools Concept (Astral uv):</strong> Concepto de herramientas, <code>uv tool upgrade</code>, <code>uv tool update-shell</code>, <code>uv tool dir</code>.</div>
+          <div class="url-text">https://docs.astral.sh/uv/concepts/tools/</div>
+          <div class="url-actions">
+            <a href="https://docs.astral.sh/uv/concepts/tools/" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://docs.astral.sh/uv/concepts/tools/">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="url-card">
+          <div><strong>12b. Tools Guide (Astral uv):</strong></div>
+          <div class="url-text">https://docs.astral.sh/uv/guides/tools</div>
+          <div class="url-actions">
+            <a href="https://docs.astral.sh/uv/guides/tools" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://docs.astral.sh/uv/guides/tools">COPIAR URL</button>
+          </div>
+        </div>
+
+        <div class="url-card">
+          <div><strong>13. Using Python on Windows (Python Software Foundation):</strong> Python Install Manager, <code>py</code>, <code>py list</code>.</div>
+          <div class="url-text">https://docs.python.org/3/using/windows.html</div>
+          <div class="url-actions">
+            <a href="https://docs.python.org/3/using/windows.html" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://docs.python.org/3/using/windows.html">COPIAR URL</button>
+          </div>
+        </div>
+
+        <h3>Fuentes secundarias</h3>
+        <div class="url-card">
+          <div><strong>14. How to install uv on Windows (pydevtools):</strong> Comprobación de <code>uv --version</code>, antivirus y ruta <code>%USERPROFILE%\.local\bin</code>.</div>
+          <div class="url-text">https://pydevtools.com/handbook/how-to/how-to-install-uv-on-windows/</div>
+          <div class="url-actions">
+            <a href="https://pydevtools.com/handbook/how-to/how-to-install-uv-on-windows/" target="_blank" rel="noopener noreferrer" class="btn-ext-url">🔗 Abrir enlace en nueva ventana</a>
+            <button type="button" class="btn-copy" data-copy="https://pydevtools.com/handbook/how-to/how-to-install-uv-on-windows/">COPIAR URL</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PESTAÑA 11: CRÉDITOS (Orden obligatorio exacto)
+         ========================================== -->
+    <section class="tab-section" data-t="CRÉDITOS">
+      <div class="card" style="text-align: center;">
+        <!-- 1. Título de la sección -->
+        <h2>CRÉDITOS</h2>
+
+        <!-- 2. SVG animado compartido con INICIO (en la primera pantalla incluso en móviles) -->
+        <div id="svg-mount-credits" class="svg-hero-wrapper" role="img" aria-label="Ilustración animada compartida de MISTRAL VIBE mostrando la arquitectura entre PowerShell, el agente IA de Mistral y las capas de seguridad"></div>
+
+        <!-- 3. Breve descripción de la ilustración -->
+        <p class="muted" style="max-width: 640px; margin: 0 auto 12px;">
+          Ilustración vectorial multicapa en tiempo real que representa el ciclo de trabajo de <strong>MISTRAL VIBE CLI v2.25.2</strong> en Windows 11: la consola PowerShell inferior envía instrucciones al núcleo hexagonal de IA de Mistral, rodeado por órbitas de herramientas (<code>read_file</code>, <code>edit</code>, <code>grep</code>, <code>plan</code>) y módulos de extensión (<code>MCP</code> y <code>SKILL</code>) bajo supervisión humana.
+        </p>
+
+        <!-- 4. Nombre del autor (elemento visual más destacado) -->
+        <div class="author-spotlight">Rubén Sbarsky</div>
+
+        <!-- 5. Texto «Autor del tutorial» -->
+        <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">Autor del tutorial</p>
+
+        <!-- 6. Información adicional pertinente -->
+        <div class="table-wrap" style="max-width: 620px; margin: 0 auto 16px; text-align: left;">
+          <table>
+            <tbody>
+              <tr><th>Obra</th><td>Del primer clic en PowerShell al trabajo profesional con un agente de programación en la terminal</td></tr>
+              <tr><th>Fecha y hora de creación (fija)</th><td><strong>08/11/2026 — 02:34:44</strong></td></tr>
+              <tr><th>Fecha de investigación documental</th><td>07/11/2026 (sobre MISTRAL VIBE 2.25.2)</td></tr>
+              <tr><th>Estándares aplicados</th><td>Metodología GAUNTLET V3 • Clean Code (Robert C. Martin) • Optimización móvil Samsung Galaxy A02s (360 px)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 7. Número de versión coincidente con el archivo -->
+        <p><span class="badge badge-oficial" style="font-size: 0.95rem; padding: 6px 14px;">Versión: V001 (tutorial_mistral_vibe_V001.html)</span></p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Botones flotantes arrastrables (INICIO y ARRIBA) -->
+  <button id="fab-home" class="floating-draggable" type="button" aria-label="Ir a la pestaña INICIO desde cualquier lugar" title="Arrástrame o pulsa para ir a INICIO">🏠 INICIO</button>
+  <button id="fab-top" class="floating-draggable" type="button" aria-label="Subir al comienzo de la pestaña actual" title="Arrástrame o pulsa para ir ARRIBA">⬆ ARRIBA</button>
+
+  <!-- Notificación Toast -->
+  <div id="toast-msg" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* =====================================================
+         1. GESTIÓN DE ALMACENAMIENTO SEGURO (Clean Code SRP)
+         ===================================================== */
+      const StorageService = {
+        get(key, fallback) {
+          try {
+            const raw = window.localStorage.getItem(key);
+            return raw !== null ? JSON.parse(raw) : fallback;
+          } catch (_) {
+            return fallback;
+          }
+        },
+        set(key, value) {
+          try {
+            window.localStorage.setItem(key, JSON.stringify(value));
+          } catch (_) {
+            /* Entorno con localStorage restringido: degradación elegante */
+          }
+        }
+      };
+
+      /* =====================================================
+         2. PLANTILLA ÚNICA SVG Y MONTAJE CON IDs ÚNICOS
+         ===================================================== */
+      let svgRawTemplate = '';
+      const masterNode = document.getElementById('svg-master-template');
+      if (masterNode) {
+        svgRawTemplate = masterNode.innerHTML.trim();
+        masterNode.remove();
+      }
+
+      function buildUniqueSvgMarkup(instanceSuffix) {
+        return svgRawTemplate.replace(/__UID__/g, instanceSuffix);
+      }
+
+      function mountSvgInstance(containerId, instanceSuffix) {
+        const container = document.getElementById(containerId);
+        if (!container || !svgRawTemplate) return;
+        try {
+          container.innerHTML = buildUniqueSvgMarkup(instanceSuffix);
+          if (!container.querySelector('svg')) {
+            throw new Error('SVG no renderizado');
+          }
+        } catch (_) {
+          const encoded = encodeURIComponent(buildUniqueSvgMarkup(instanceSuffix));
+          container.innerHTML = '<img src="data:image/svg+xml;charset=utf-8,' + encoded + '" alt="Ilustración MISTRAL VIBE" style="width:100%;height:100%;object-fit:contain;">';
+        }
+      }
+
+      function ensureVisibleSvgsMounted() {
+        const homeMount = document.getElementById('svg-mount-home');
+        if (homeMount && homeMount.children.length === 0) {
+          mountSvgInstance('svg-mount-home', 'home');
+        }
+        const creditsMount = document.getElementById('svg-mount-credits');
+        if (creditsMount && creditsMount.children.length === 0) {
+          mountSvgInstance('svg-mount-credits', 'credits');
+        }
+      }
+
+      /* Comprobación periódica que repara cualquier contenedor SVG que quede vacío */
+      setInterval(ensureVisibleSvgsMounted, 2000);
+
+      /* =====================================================
+         3. NAVEGACIÓN SPA, MENÚ ÍNDICE Y BOTONES ANTERIOR/SIGUIENTE
+         ===================================================== */
+      const secs = Array.from(document.querySelectorAll('.tab-section'));
+      const tabButtons = Array.from(document.querySelectorAll('.nav-tab-btn'));
+      const dr = document.querySelector('#dr');
+      const mb = document.querySelector('#mb');
+      let currentTabIndex = 0;
+
+      const tg = (v) => {
+        dr.classList.toggle('o', v);
+        mb.setAttribute('aria-expanded', dr.classList.contains('o'));
+      };
+
+      function scrollToTopOfCurrentTab() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function go(index) {
+        const safeIndex = Math.max(0, Math.min(secs.length - 1, Number(index) || 0));
+        currentTabIndex = safeIndex;
+
+        secs.forEach((sec, idx) => {
+          sec.classList.toggle('active', idx === safeIndex);
+        });
+
+        tabButtons.forEach((btn, idx) => {
+          const isCurrent = idx === safeIndex;
+          btn.classList.toggle('active', isCurrent);
+          if (isCurrent) {
+            btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          }
+        });
+
+        Array.from(dr.children).forEach((a, j) => {
+          a.classList.toggle('on', j === safeIndex);
+        });
+
+        if (safeIndex === 0) mountSvgInstance('svg-mount-home', 'home');
+        if (safeIndex === 11) mountSvgInstance('svg-mount-credits', 'credits');
+
+        StorageService.set('vibe_active_tab', safeIndex);
+        scrollToTopOfCurrentTab();
+        updateReadingProgress();
+      }
+
+      window.go = go;
+
+      /* Generar entradas del panel lateral #dr automáticamente desde las secciones */
+      secs.forEach((s, i) => {
+        const a = document.createElement('a');
+        a.tabIndex = 0;
+        a.textContent = (i ? i + '. ' : '') + (s.dataset.t || s.querySelector('h2').textContent);
+        a.onclick = () => {
+          go(i);
+          tg(false);
+        };
+        a.onkeydown = (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            go(i);
+            tg(false);
+          }
+        };
+        dr.appendChild(a);
+      });
+
+      /* Generar barras de botones Anterior / Siguiente fijas al final de cada pestaña */
+      secs.forEach((sec, idx) => {
+        const footerNav = document.createElement('div');
+        footerNav.className = 'tab-footer-nav';
+        footerNav.setAttribute('aria-label', 'Navegación entre pestañas');
+
+        if (idx > 0) {
+          const prevTitle = secs[idx - 1].dataset.t;
+          const prevBtn = document.createElement('button');
+          prevBtn.type = 'button';
+          prevBtn.className = 'btn-step';
+          prevBtn.textContent = '← Anterior: ' + prevTitle;
+          prevBtn.onclick = () => go(idx - 1);
+          footerNav.appendChild(prevBtn);
+        }
+
+        if (idx < secs.length - 1) {
+          const nextTitle = secs[idx + 1].dataset.t;
+          const nextBtn = document.createElement('button');
+          nextBtn.type = 'button';
+          nextBtn.className = 'btn-step primary';
+          nextBtn.textContent = 'Siguiente: ' + nextTitle + ' →';
+          nextBtn.onclick = () => go(idx + 1);
+          footerNav.appendChild(nextBtn);
+        }
+
+        sec.appendChild(footerNav);
+      });
+
+      /* Eventos de barra superior y menú Índice */
+      tabButtons.forEach((btn) => {
+        btn.addEventListener('click', () => go(Number(btn.dataset.tab)));
+      });
+
+      mb.onclick = () => tg();
+      const ixBtn = document.querySelector('#ix');
+      if (ixBtn) ixBtn.onclick = () => tg(true);
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') tg(false);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#dr,#mb,#ix')) tg(false);
+      });
+
+      /* =====================================================
+         4. BOTONES FLOTANTES ARRASTRABLES (INICIO y ARRIBA)
+         ===================================================== */
+      function makeDraggableButton(element, storageKey, onClickCallback) {
+        let isDragging = false;
+        let hasMoved = false;
+        let startX = 0;
+        let startY = 0;
+        let initialLeft = 0;
+        let initialTop = 0;
+
+        const savedPos = StorageService.get(storageKey, null);
+        if (savedPos && typeof savedPos.left === 'number' && typeof savedPos.top === 'number') {
+          const clampedLeft = Math.max(4, Math.min(window.innerWidth - 95, savedPos.left));
+          const clampedTop = Math.max(64, Math.min(window.innerHeight - 54, savedPos.top));
+          element.style.left = clampedLeft + 'px';
+          element.style.top = clampedTop + 'px';
+          element.style.right = 'auto';
+          element.style.bottom = 'auto';
+        }
+
+        element.addEventListener('pointerdown', (e) => {
+          isDragging = true;
+          hasMoved = false;
+          startX = e.clientX;
+          startY = e.clientY;
+          const rect = element.getBoundingClientRect();
+          initialLeft = rect.left;
+          initialTop = rect.top;
+          element.setPointerCapture(e.pointerId);
+        });
+
+        element.addEventListener('pointermove', (e) => {
+          if (!isDragging) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+            hasMoved = true;
+          }
+          if (hasMoved) {
+            const maxLeft = window.innerWidth - element.offsetWidth - 4;
+            const maxTop = window.innerHeight - element.offsetHeight - 4;
+            const newLeft = Math.max(4, Math.min(maxLeft, initialLeft + dx));
+            const newTop = Math.max(62, Math.min(maxTop, initialTop + dy));
+            element.style.left = newLeft + 'px';
+            element.style.top = newTop + 'px';
+            element.style.right = 'auto';
+            element.style.bottom = 'auto';
+          }
+        });
+
+        element.addEventListener('pointerup', (e) => {
+          if (!isDragging) return;
+          isDragging = false;
+          element.releasePointerCapture(e.pointerId);
+          if (hasMoved) {
+            const rect = element.getBoundingClientRect();
+            StorageService.set(storageKey, { left: rect.left, top: rect.top });
+          } else {
+            onClickCallback();
+          }
+        });
+      }
+
+      makeDraggableButton(document.getElementById('fab-home'), 'vibe_fab_home_pos', () => {
+        go(0);
+      });
+
+      makeDraggableButton(document.getElementById('fab-top'), 'vibe_fab_top_pos', () => {
+        scrollToTopOfCurrentTab();
+      });
+
+      /* =====================================================
+         5. COPIA AL PORTAPAPELES CON CONFIRMACIÓN Y ALTERNATIVA
+         ===================================================== */
+      const toastEl = document.getElementById('toast-msg');
+      let toastTimer = null;
+
+      function showToast(message) {
+        toastEl.textContent = message;
+        toastEl.style.display = 'block';
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastEl.style.display = 'none';
+        }, 2400);
+      }
+
+      function fallbackCopyText(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        let ok = false;
+        try {
+          ok = document.execCommand('copy');
+        } catch (_) {
+          ok = false;
+        }
+        document.body.removeChild(ta);
+        return ok;
+      }
+
+      document.addEventListener('click', async (e) => {
+        const copyBtn = e.target.closest('.btn-copy');
+        if (!copyBtn) return;
+        const textToCopy = copyBtn.getAttribute('data-copy') || '';
+        const originalLabel = copyBtn.textContent;
+
+        let copied = false;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          try {
+            await navigator.clipboard.writeText(textToCopy);
+            copied = true;
+          } catch (_) {
+            copied = fallbackCopyText(textToCopy);
+          }
+        } else {
+          copied = fallbackCopyText(textToCopy);
+        }
+
+        if (copied) {
+          copyBtn.textContent = '✓ COPIADO';
+          showToast('✓ Copiado exactamente al portapapeles');
+          setTimeout(() => { copyBtn.textContent = originalLabel; }, 1600);
+        } else {
+          window.prompt('Copia manualmente el texto seleccionándolo con Ctrl+C:', textToCopy);
+        }
+      });
+
+      /* =====================================================
+         6. PREFERENCIAS: TEMA, TAMAÑO DE LETRA, LISTAS Y PROGRESO
+         ===================================================== */
+      let fontScale = StorageService.get('vibe_font_scale', 1);
+      function applyFontScale(scale) {
+        fontScale = Math.max(0.85, Math.min(1.35, Number(scale.toFixed(2))));
+        document.documentElement.style.setProperty('--font-scale', String(fontScale));
+        StorageService.set('vibe_font_scale', fontScale);
+      }
+      applyFontScale(fontScale);
+
+      document.getElementById('btn-font-dec').onclick = () => applyFontScale(fontScale - 0.08);
+      document.getElementById('btn-font-inc').onclick = () => applyFontScale(fontScale + 0.08);
+
+      const savedTheme = StorageService.get('vibe_theme', 'dark');
+      document.documentElement.setAttribute('data-theme', savedTheme);
+
+      document.getElementById('btn-theme-toggle').onclick = () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        StorageService.set('vibe_theme', next);
+        showToast(next === 'dark' ? '🌙 Tema oscuro activado' : '☀️ Tema claro activado');
+      };
+
+      document.getElementById('btn-svg-pause').onclick = () => {
+        const paused = document.body.classList.toggle('animations-paused');
+        showToast(paused ? '⏸ Animación SVG en pausa' : '▶ Animación SVG en movimiento');
+      };
+
+      /* Persistencia de listas de comprobación */
+      const savedChecks = StorageService.get('vibe_checklists', {});
+      document.querySelectorAll('input[type="checkbox"][data-check]').forEach((box) => {
+        const id = box.getAttribute('data-check');
+        if (savedChecks[id]) box.checked = true;
+        box.addEventListener('change', () => {
+          savedChecks[id] = box.checked;
+          StorageService.set('vibe_checklists', savedChecks);
+        });
+      });
+
+      /* Desplegar/plegar las 33 preguntas */
+      window.toggleAllQA = function (openState) {
+        document.querySelectorAll('.qa-item').forEach((d) => {
+          d.open = openState;
+        });
+      };
+
+      /* Barra de progreso de lectura */
+      function updateReadingProgress() {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const pct = docHeight > 0 ? Math.min(100, Math.round((scrollTop / docHeight) * 100)) : 100;
+        document.getElementById('reading-progress').style.width = pct + '%';
+      }
+      window.addEventListener('scroll', updateReadingProgress, { passive: true });
+
+      /* =====================================================
+         7. BUSCADOR INTERNO MULTIPESTAÑA
+         ===================================================== */
+      const searchInput = document.getElementById('global-search');
+      const searchPanel = document.getElementById('search-results-panel');
+
+      function performSearch(query) {
+        const cleanQuery = query.trim().toLowerCase();
+        if (cleanQuery.length < 2) {
+          searchPanel.style.display = 'none';
+          searchPanel.innerHTML = '';
+          return;
+        }
+
+        const results = [];
+        secs.forEach((sec, idx) => {
+          const text = sec.textContent || '';
+          const lower = text.toLowerCase();
+          const pos = lower.indexOf(cleanQuery);
+          if (pos !== -1) {
+            const snippetStart = Math.max(0, pos - 40);
+            const snippetEnd = Math.min(text.length, pos + cleanQuery.length + 60);
+            const snippet = text.slice(snippetStart, snippetEnd).replace(/\s+/g, ' ');
+            results.push({
+              tabIndex: idx,
+              tabTitle: sec.dataset.t,
+              snippet: '...' + snippet + '...'
+            });
+          }
+        });
+
+        searchPanel.innerHTML = '';
+        if (results.length === 0) {
+          searchPanel.innerHTML = '<div class="muted">No se encontraron coincidencias para "' + query + '".</div>';
+        } else {
+          results.forEach((item) => {
+            const link = document.createElement('a');
+            link.className = 'search-hit';
+            link.innerHTML = '<strong>[' + item.tabTitle + ']</strong> — ' + item.snippet;
+            link.onclick = () => {
+              go(item.tabIndex);
+              searchPanel.style.display = 'none';
+            };
+            searchPanel.appendChild(link);
+          });
+        }
+        searchPanel.style.display = 'block';
+      }
+
+      searchInput.addEventListener('input', (e) => performSearch(e.target.value));
+      document.getElementById('btn-clear-search').onclick = () => {
+        searchInput.value = '';
+        searchPanel.style.display = 'none';
+      };
+
+      /* =====================================================
+         8. PREPARACIÓN DE IMPRESIÓN / PDF A4 Y RESTAURACIÓN
+         ===================================================== */
+      let closedDetailsBeforePrint = [];
+      let wasPausedBeforePrint = false;
+
+      function prepareDocumentForPrint() {
+        mountSvgInstance('svg-mount-home', 'home');
+        mountSvgInstance('svg-mount-credits', 'credits');
+        wasPausedBeforePrint = document.body.classList.contains('animations-paused');
+        document.body.classList.add('animations-paused');
+
+        closedDetailsBeforePrint = [];
+        document.querySelectorAll('details.collapsible').forEach((det) => {
+          if (!det.open) {
+            closedDetailsBeforePrint.push(det);
+            det.open = true;
+          }
+        });
+      }
+
+      function restoreDocumentAfterPrint() {
+        closedDetailsBeforePrint.forEach((det) => {
+          det.open = false;
+        });
+        closedDetailsBeforePrint = [];
+        if (!wasPausedBeforePrint) {
+          document.body.classList.remove('animations-paused');
+        }
+      }
+
+      window.addEventListener('beforeprint', prepareDocumentForPrint);
+      window.addEventListener('afterprint', restoreDocumentAfterPrint);
+
+      document.getElementById('btn-print-pdf').onclick = () => {
+        prepareDocumentForPrint();
+        try {
+          window.print();
+        } catch (_) {
+          window.alert('Abre este archivo directamente en el navegador y utiliza Ctrl+P o Cmd+P');
+        } finally {
+          setTimeout(restoreDocumentAfterPrint, 1000);
+        }
+      };
+
+      /* =====================================================
+         9. INICIALIZACIÓN AL CARGAR EL DOCUMENTO
+         ===================================================== */
+      mountSvgInstance('svg-mount-home', 'home');
+      mountSvgInstance('svg-mount-credits', 'credits');
+      const initialTab = StorageService.get('vibe_active_tab', 0);
+      go(initialTab);
+    })();
+  </script>
+</body>
+</html>
